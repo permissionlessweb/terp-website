@@ -16,17 +16,17 @@ from enum import Enum
 # ============================================================================
 
 # Default Settings
-DEFAUT_TERP_HOME = os.path.expanduser("~/.terp")
+DEFAULT_TERP_HOME = os.path.expanduser("~/.terpd")
 DEFAULT_MONIKER = "terp"
 
 # Network Choices
-NETWORK_CHOICES = ['morocco-1', '90u-4']
+NETWORK_CHOICES = ['morocco-1', '120u-1']
 INSTALL_CHOICES = ['node', 'client', 'localterp']
 PRUNING_CHOICES = ['default', 'nothing', 'everything']
 
 # Binary Versions
-MAINNET_VERSION = "5.0.2"
-TESTNET_VERSION = "5.0.2"
+MAINNET_VERSION = "5.1.0"
+TESTNET_VERSION = "5.1.0"
 
 # GitHub Repository
 GITHUBURL = "https://github.com/terpnetwork/terp-core"
@@ -39,7 +39,7 @@ TESTNET_BINARY_BASE_URL = f"{GITHUB_RELEASES_URL}/v{TESTNET_VERSION}"
 
 # Genesis Files
 MAINNET_GENESIS_URL = f"{NETWORKSURL}/mainnet/morocco-1/genesis.json"
-TESTNET_GENESIS_URL = f"{NETWORKSURL}/testnet/90u-4/genesis.json"
+TESTNET_GENESIS_URL = f"{NETWORKSURL}/testnet/120u-1/genesis.json"
 
 # RPC Endpoints
 MAINNET_RPC_ENDPOINT = "https://rpc.terp.network:443"
@@ -176,7 +176,7 @@ class Network:
         self.snapshot_url = snapshot_url
 
 TESTNET = Network(
-    chain_id = "90u-4",
+    chain_id = "120u-1",
     version = f"v{TESTNET_VERSION}",
     genesis_url = TESTNET_GENESIS_URL,
     binary_url = {
@@ -185,8 +185,8 @@ TESTNET = Network(
             "arm64": f"{TESTNET_BINARY_BASE_URL}/terpd-linux-arm64"
         },
         "darwin": {
-          "amd64": f"{TESTNET_BINARY_BASE_URL}/terpd-linux-amd64",
-          "arm64": f"{TESTNET_BINARY_BASE_URL}/terpd-linux-arm64"
+            "amd64": None,  # No pre-built darwin binaries — build from source
+            "arm64": None,
         },
     },
     peers = TESTNET_PEERS,
@@ -205,8 +205,8 @@ MAINNET = Network(
             "arm64": f"{MAINNET_BINARY_BASE_URL}/terpd-linux-arm64"
         },
         "darwin": {
-            "amd64": f"{MAINNET_BINARY_BASE_URL}/terpd-linux-amd64",
-            "arm64": f"{MAINNET_BINARY_BASE_URL}/terpd-linux-arm64"
+            "amd64": None,  # No pre-built darwin binaries — build from source
+            "arm64": None,
         },
     },
     peers = MAINNET_PEERS if MAINNET_PEERS else None,
@@ -263,7 +263,7 @@ def safe_input(prompt):
         print("This script requires interactive input. Please run it in an interactive terminal.")
         print("If you want to run this non-interactively, use the command-line flags:")
         print("  --install <node|client|localterp>")
-        print("  --network <morocco-1|90u-4>")
+        print("  --network <morocco-1|120u-1>")
         print("  --home <path>")
         print("  --moniker <name>")
         print("\nFor full options, run: python3 terp-installer.py --help")
@@ -442,11 +442,11 @@ def select_terp_home():
     if args.home:
         terp_home = args.home
     else:
-        default_home = os.path.expanduser("~/.terp")
+        default_home = os.path.expanduser("~/.terpd")
         print(bcolors.OKGREEN + f"""
 Do you want to install Terp-Core in the default location?:
 
-    1) Yes, use default location {DEFAUT_TERP_HOME} (recommended)
+    1) Yes, use default location {DEFAULT_TERP_HOME} (recommended)
     2) No, specify custom location
 
 💡 You can specify the home using the --home flag.
@@ -753,7 +753,7 @@ def download_binary(network):
 
     if architecture == "x86_64":
         architecture = "amd64"
-    elif architecture == "aarch64":
+    elif architecture in ("aarch64", "arm64"):
         architecture = "arm64"
 
     if architecture not in ["arm64", "amd64"]:
@@ -762,9 +762,41 @@ def download_binary(network):
 
     if network == NetworkChoice.TESTNET:
         binary_urls = TESTNET.binary_url
+        version = TESTNET_VERSION
     else:
         binary_urls = MAINNET.binary_url
+        version = MAINNET_VERSION
 
+    # macOS: build from source (no pre-built darwin binaries)
+    if operating_system == "darwin":
+        try:
+            subprocess.run(["go", "version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            print(bcolors.RED + "Error: Go is required to build terpd on macOS." + bcolors.ENDC)
+            print("Install Go from https://go.dev/dl/ or: brew install go")
+            sys.exit(1)
+
+        print("Building " + bcolors.PURPLE + "terpd" + bcolors.ENDC + f" v{version} from source (this may take a few minutes)...")
+        subprocess.run(
+            ["go", "install", f"github.com/terpnetwork/terp-core/cmd/terpd@v{version}"],
+            check=True,
+        )
+
+        # go install puts binary in $(go env GOPATH)/bin — copy if needed
+        go_bin = os.path.join(
+            subprocess.run(["go", "env", "GOPATH"], capture_output=True, text=True, check=True).stdout.strip(),
+            "bin", "terpd"
+        )
+        if os.path.isfile(go_bin) and go_bin != binary_path:
+            import shutil
+            shutil.copy2(go_bin, binary_path)
+            os.chmod(binary_path, 0o755)
+
+        subprocess.run([binary_path, "version"], check=True)
+        print("Binary built and installed successfully.")
+        return
+
+    # Linux: download pre-built binary
     if operating_system in binary_urls and architecture in binary_urls[operating_system]:
         binary_url = binary_urls[operating_system][architecture]
     else:
@@ -939,7 +971,7 @@ Do you want me to install it?
         if network == NetworkChoice.TESTNET:
             snapshot_url = TESTNET.snapshot_url
             chain_id = TESTNET.chain_id
-            quicksync_prefix = "90u-4"
+            quicksync_prefix = "120u-1"
         elif network == NetworkChoice.MAINNET:
             snapshot_url = MAINNET.snapshot_url
             chain_id = MAINNET.chain_id
@@ -1097,7 +1129,7 @@ Do you want to install cosmovisor?
 
     if architecture == "x86_64":
         architecture = "amd64"
-    elif architecture == "aarch64":
+    elif architecture in ("aarch64", "arm64"):
         architecture = "arm64"
 
     if architecture not in ["arm64", "amd64"]:

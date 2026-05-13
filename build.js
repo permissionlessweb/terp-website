@@ -37,7 +37,10 @@ async function build() {
   const getOut = path.join(outdir, 'get');
   fs.mkdirSync(getOut, { recursive: true });
   for (const file of fs.readdirSync('get')) {
-    fs.copyFileSync(path.join('get', file), path.join(getOut, file));
+    const src = path.join('get', file);
+    if (fs.statSync(src).isFile()) {
+      fs.copyFileSync(src, path.join(getOut, file));
+    }
   }
 
   // // Copy pkg/ WASM (if built).

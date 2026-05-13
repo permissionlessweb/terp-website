@@ -6,49 +6,51 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 
 # project paths
 website_dir := justfile_directory()
-test_dir    := website_dir / "tests"
 lib_dir     := website_dir / "lib"
+scripts_sh  := website_dir / "scripts" / "sh"
+scripts_dir := website_dir / "scripts"
 config      := website_dir / "public" / "config.json"
+
+# pages that actually exist in pages/
+pages := "index.html svg.html tabs.html no-rick.html"
 
 # ─── Development ────────────────────────────────────────────────
 
 # start the dev server on :3000
 serve:
-    python3 scripts/py/serve.py
+    python3 scripts/serve.py
 
 # start dev server on a custom port
 serve-on port="3000":
-    WEBSITE_PORT={{port}} python3 scripts/py/serve.py
+    WEBSITE_PORT={{port}} python3 scripts/serve.py
 
 # ─── Config & Checksums ────────────────────────────────────────
 
 # compute SHA-256 checksums for installers and bundles into config.json
 build-config:
-    ./scripts/sh/build-config.sh
+    {{scripts_sh}}/build-config.sh
 
 # verify file checksums match config.json
 verify-config:
-    ./scripts/sh/build-config.sh --verify
+    {{scripts_sh}}/build-config.sh --verify
 
 # ─── Bundles ────────────────────────────────────────────────────
 
 # rebuild & sync all contract TS bundles into lib/
 sync-bundles:
-    ./scripts/sync-bundles.sh
+    {{scripts_sh}}/sync-bundles.sh
 
 # copy existing bundle builds without re-running codegen
 sync-bundles-copy:
-    ./scripts/sync-bundles.sh --copy-only
+    {{scripts_sh}}/sync-bundles.sh --copy-only
 
 # show what bundles would be synced (dry run)
 sync-bundles-list:
-    ./scripts/sync-bundles.sh --list
+    {{scripts_sh}}/sync-bundles.sh --list
 
-# ─── Testing (Rust — recommended) ────────────────────────────────
+# ─── Testing (Rust) ─────────────────────────────────────────────
 
-scripts_dir := website_dir / "scripts"
-
-# spawn local chain + deploy all suites via Rust, keep alive for testing
+# spawn local chain + deploy all suites, keep alive for testing
 test-rs:
     cd {{scripts_dir}} && RUST_LOG=info cargo run -- deploy --network local --keep-alive
 
@@ -86,13 +88,13 @@ check-scripts:
 
 # start e2e with local IBC (two terp chains + relayer)
 test-local-ibc:
-    ENABLE_IBC=true ./tests/local-test-env.sh
+    ENABLE_IBC=true {{scripts_sh}}/local-test-env.sh
 
 # ─── Production ─────────────────────────────────────────────────
 
 # inject mainnet contract addresses into config.json
 configure-prod:
-    ./tests/configure_prod.sh
+    {{scripts_sh}}/configure_prod.sh
 
 # full static build → dist/
 build:
@@ -101,11 +103,11 @@ build:
 
 # ─── Validation ─────────────────────────────────────────────────
 
-# check all HTML files exist and are non-empty
+# check all HTML pages exist and are non-empty
 check-html:
 	#!/usr/bin/env bash
 	ok=0; fail=0
-	for f in index.html mint.html tabs.html passkey.html tx.html admin.html ibc.html oline.html shell.html; do
+	for f in {{pages}}; do
 		if [ -s "{{website_dir}}/pages/$f" ]; then
 			echo "  ok  $f ($(wc -c < "{{website_dir}}/pages/$f" | tr -d ' ') bytes)"
 			ok=$((ok + 1))
@@ -144,7 +146,7 @@ lint-html:
 		echo "install html-tidy: brew install tidy-html5"
 		exit 1
 	fi
-	for f in index.html mint.html tabs.html passkey.html tx.html admin.html ibc.html oline.html shell.html; do
+	for f in {{pages}}; do
 		echo "── $f ──"
 		tidy -q -e "{{website_dir}}/pages/$f" 2>&1 || true
 	done
@@ -169,4 +171,4 @@ git-status:
 
 # show lines of HTML per page
 loc:
-	wc -l pages/index.html pages/mint.html pages/tabs.html pages/passkey.html pages/tx.html pages/admin.html pages/ibc.html pages/oline.html pages/shell.html lib/config-loader.js lib/tx-builder.js lib/auth.js lib/ibc-client.js lib/self-relay.js lib/query-cache.js
+	wc -l pages/index.html pages/svg.html pages/tabs.html pages/no-rick.html lib/config-loader.js lib/tx-builder.js lib/auth.js lib/ibc-client.js lib/self-relay.js lib/query-cache.js

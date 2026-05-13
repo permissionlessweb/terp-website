@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG Mint — Collection Creator</title>
+<link rel="icon" href="/public/favicon.ico">
+<link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;--bg2:rgba(33,34,44,0.7);--bg3:rgba(33,34,44,0.4);
+  --fg:#f8f8f2;--fg2:#d2d3d8;--muted:#6272a4;
+  --cyan:#b1ebeb;--purple:#bd93f9;--green:#50fa7b;--red:#ff5555;--orange:#ffb86c;
+  --border:rgba(255,255,255,0.06);--border2:rgba(189,147,249,0.15);
+  --radius:6px;
+}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:'Satoshi',system-ui,sans-serif;font-weight:500;
+  line-height:1.5;min-height:100vh;
+}
+a{color:var(--purple);text-decoration:none}
+a:hover{opacity:0.8}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.header{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.6rem 1.5rem;
+  background:rgba(8,9,13,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border2);
+}
+.header-logo{display:flex;align-items:center;gap:0.6rem}
+.header-logo svg{width:22px;height:22px;fill:var(--purple)}
+.header-title{font-size:1rem;font-weight:700;color:var(--fg)}
+.header-title span{color:var(--purple)}
+.header-nav{display:flex;gap:1rem;align-items:center;font-size:0.85rem}
+.header-nav a{color:var(--muted);transition:color 0.2s}
+.header-nav a:hover{color:var(--fg)}
+.wasm-badge{
+  font-size:0.7rem;padding:2px 6px;border-radius:3px;
+  background:rgba(80,250,123,0.1);color:var(--green);
+  border:1px solid rgba(80,250,123,0.2);
+}
+.wasm-badge.pending{color:var(--muted);background:rgba(98,114,164,0.1);border-color:rgba(98,114,164,0.2)}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+.page{max-width:1100px;margin:0 auto;padding:1rem 1.5rem 3rem}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:1rem;align-items:start}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem;margin-bottom:0.75rem;
+}
+.card-title{
+  font-size:0.85rem;font-weight:700;color:var(--cyan);
+  margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:0.04em;
+}
+
+/* ── Form Fields ────────────────────────────────────────────── */
+.field-row{margin-bottom:0.5rem}
+.field-label{
+  display:flex;align-items:center;gap:0.3rem;
+  font-size:0.72rem;color:var(--muted);margin-bottom:2px;
+}
+.field-input{
+  width:100%;padding:0.35rem 0.5rem;
+  background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);
+  border-radius:4px;color:var(--fg);font-size:0.78rem;
+  font-family:'Satoshi',system-ui,sans-serif;
+  transition:border-color 0.15s;
+}
+.field-input:focus{outline:none;border-color:var(--purple)}
+.field-input::placeholder{color:rgba(98,114,164,0.6)}
+
+/* ── File Upload ────────────────────────────────────────────── */
+.file-row{
+  display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;
+}
+.file-row label{font-size:0.78rem;color:var(--fg2);min-width:90px}
+.file-btn{
+  padding:0.3rem 0.6rem;border-radius:4px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:var(--bg3);color:var(--fg2);
+  font-size:0.72rem;cursor:pointer;transition:all 0.15s;
+  font-family:'Satoshi',system-ui,sans-serif;
+}
+.file-btn:hover{border-color:var(--purple);color:var(--purple)}
+.file-name{font-size:0.68rem;color:var(--muted);font-style:italic}
+
+/* ── Variable Overrides ─────────────────────────────────────── */
+.var-override{
+  display:flex;align-items:center;gap:0.4rem;
+  margin-bottom:0.3rem;font-size:0.75rem;
+}
+.var-override .var-name{
+  color:var(--orange);font-family:monospace;font-size:0.72rem;
+  min-width:120px;
+}
+.var-override .var-entropy{
+  color:var(--muted);font-size:0.65rem;min-width:60px;text-align:right;
+}
+.var-override input{
+  flex:1;padding:0.25rem 0.4rem;
+  background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);
+  border-radius:4px;color:var(--fg);font-size:0.72rem;
+  font-family:monospace;
+}
+.var-override input:focus{outline:none;border-color:var(--purple)}
+
+/* ── SDL Area / Preview ─────────────────────────────────────── */
+.output-wrap{position:sticky;top:52px}
+.sdl-area{
+  width:100%;min-height:400px;max-height:70vh;
+  padding:0.8rem;resize:vertical;
+  background:rgba(0,0,0,0.4);border:1px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--fg);font-size:0.75rem;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  line-height:1.6;tab-size:2;
+  overflow:auto;white-space:pre;
+}
+.sdl-area:focus{outline:none;border-color:var(--purple)}
+
+/* ── SVG Render Container ───────────────────────────────────── */
+#svg-render{
+  display:flex;align-items:center;justify-content:center;
+  min-height:300px;max-height:70vh;
+  padding:1rem;overflow:hidden;
+  background:rgba(0,0,0,0.4);border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+#svg-render svg{max-width:100%;max-height:100%}
+
+/* ── Seed Slider ────────────────────────────────────────────── */
+.seed-row{
+  display:flex;align-items:center;gap:0.6rem;
+  margin:0.5rem 0;font-size:0.78rem;
+}
+.seed-row label{color:var(--fg2);min-width:36px}
+.seed-row input[type="range"]{
+  flex:1;height:4px;-webkit-appearance:none;appearance:none;
+  background:rgba(255,255,255,0.1);border-radius:2px;outline:none;
+}
+.seed-row input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--purple);cursor:pointer;
+}
+.seed-row .seed-val{
+  color:var(--purple);font-family:monospace;font-weight:700;min-width:28px;text-align:right;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem}
+.btn{
+  padding:0.4rem 0.8rem;border-radius:var(--radius);
+  border:1px solid rgba(255,255,255,0.1);
+  background:var(--bg3);color:var(--fg2);
+  font-size:0.75rem;cursor:pointer;transition:all 0.15s;
+  font-family:'Satoshi',system-ui,sans-serif;
+}
+.btn:hover{border-color:var(--purple);color:var(--purple)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--purple) 0%,var(--green) 100%);
+  color:var(--bg);border:none;font-weight:600;
+}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);color:var(--bg)}
+
+/* ── Status Bar ─────────────────────────────────────────────── */
+.status-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.4rem 0.6rem;margin-bottom:0.5rem;
+  font-size:0.72rem;color:var(--muted);
+  border-radius:var(--radius);
+  background:rgba(0,0,0,0.2);
+}
+.status-bar .count{color:var(--green)}
+.status-bar .missing{color:var(--red)}
+
+/* ── Tab Toggle ─────────────────────────────────────────────── */
+.tab-row{display:flex;gap:0;margin-bottom:0.5rem}
+.tab-btn{
+  padding:0.35rem 0.7rem;
+  border:1px solid rgba(255,255,255,0.08);
+  background:transparent;color:var(--muted);
+  font-size:0.72rem;cursor:pointer;transition:all 0.15s;
+  font-family:'Satoshi',system-ui,sans-serif;
+}
+.tab-btn:first-child{border-radius:var(--radius) 0 0 var(--radius)}
+.tab-btn:last-child{border-radius:0 var(--radius) var(--radius) 0}
+.tab-btn.active{background:rgba(189,147,249,0.1);color:var(--purple);border-color:rgba(189,147,249,0.3)}
+
+/* ── Auth Selector ──────────────────────────────────────────── */
+.auth-selector{display:flex;gap:0.4rem;margin-bottom:0.5rem}
+.auth-btn{
+  flex:1;padding:0.5rem;border-radius:var(--radius);cursor:pointer;
+  font-family:inherit;font-size:0.78rem;font-weight:500;
+  border:1px solid rgba(255,255,255,0.1);
+  background:var(--bg3);color:var(--fg2);
+  transition:all 0.2s;
+}
+.auth-btn:hover{border-color:rgba(189,147,249,0.3);color:var(--fg)}
+.auth-btn.selected{
+  border-color:var(--purple);color:var(--purple);
+  background:rgba(189,147,249,0.1);
+}
+.auth-btn small{display:block;font-size:0.65rem;color:var(--muted);margin-top:0.15rem;font-weight:300}
+
+/* ── Toast ──────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  padding:0.6rem 1rem;max-width:360px;
+  background:rgba(33,34,44,0.95);border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--radius);font-size:0.78rem;color:var(--fg2);
+  transform:translateY(80px);opacity:0;transition:all 0.3s ease;z-index:200;
+}
+.toast.visible{transform:translateY(0);opacity:1}
+.toast.error{border-color:rgba(255,85,85,0.3);color:var(--red)}
+.toast.success{border-color:rgba(80,250,123,0.3);color:var(--green)}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.footer{
+  text-align:center;padding:2rem 1rem 1rem;
+  font-size:0.72rem;color:var(--muted);
+}
+.footer a{color:var(--muted)}
+.footer a:hover{color:var(--purple)}
+
+/* ── Intro ──────────────────────────────────────────────────── */
+.intro{margin-bottom:1rem}
+.intro h1{font-size:1.4rem;font-weight:700;color:var(--fg);margin-bottom:0.3rem}
+.intro h1 span{color:var(--purple)}
+.intro p{font-size:0.82rem;color:var(--muted);max-width:600px}
+</style>
+
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────────────── -->
+<!-- ── Page ──────────────────────────────────────────────────── -->
+<div class="page">
+  <div class="intro">
+    <h1><span>SVG Mint</span> Collection Creator</h1>
+    <p>Build, preview, and deploy generative SVG art collections on Terp Network. Upload an SVG template with <code>${VAR}</code> placeholders and a collection specification JSON to preview entropic art generation.</p>
+  </div>
+
+  <div class="grid">
+    <!-- ── Left Column: Form ──────────────────────────────────── -->
+    <div class="left-col">
+
+      <!-- Collection Info -->
+      <div class="card">
+        <div class="card-title">Collection Info</div>
+        <div class="field-row">
+          <div class="field-label">Name</div>
+          <input class="field-input" id="col-name" placeholder="My SVG Collection" value="Terp SVG">
+        </div>
+        <div class="field-row">
+          <div class="field-label">Symbol</div>
+          <input class="field-input" id="col-symbol" placeholder="SVG" value="TERP">
+        </div>
+        <div class="field-row">
+          <div class="field-label">Description</div>
+          <input class="field-input" id="col-description" placeholder="Generative orbital art">
+        </div>
+        <div class="field-row">
+          <div class="field-label">External URL</div>
+          <input class="field-input" id="col-external-url" placeholder="https://permissionless.money">
+        </div>
+        <div class="field-row">
+          <div class="field-label">Label</div>
+          <input class="field-input" id="col-label" placeholder="my-collection-v1" value="svg-collection">
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div class="card">
+        <div class="card-title">Pricing</div>
+        <div class="field-row">
+          <div class="field-label">Unit Price (uthiol)</div>
+          <input class="field-input" id="col-price" type="number" placeholder="5000000" value="5000000">
+        </div>
+        <div class="field-row">
+          <div class="field-label">Max Token Supply</div>
+          <input class="field-input" id="col-supply" type="number" placeholder="10000" value="10000">
+        </div>
+      </div>
+
+      <!-- Files -->
+      <div class="card">
+        <div class="card-title">Files</div>
+        <div class="file-row">
+          <label>SVG Template</label>
+          <button class="file-btn" onclick="document.getElementById('svg-file').click()">Choose File</button>
+          <span class="file-name" id="svg-file-name">No file</span>
+          <input type="file" id="svg-file" accept=".svg" style="display:none">
+        </div>
+        <div class="file-row">
+          <label>Spec JSON</label>
+          <button class="file-btn" onclick="document.getElementById('spec-file').click()">Choose File</button>
+          <span class="file-name" id="spec-file-name">No file</span>
+          <input type="file" id="spec-file" accept=".json" style="display:none">
+        </div>
+      </div>
+
+      <!-- Variable Overrides -->
+      <div class="card">
+        <div class="card-title">Variable Overrides</div>
+        <div id="var-overrides">
+          <p style="font-size:0.72rem;color:var(--muted)">Load a collection spec to see variables</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="card">
+        <div class="card-title">Actions</div>
+        <div class="btn-row" style="margin-top:0">
+          <button class="btn" onclick="validateAll()">Validate</button>
+          <button class="btn" onclick="uploadToS3()">Upload to S3</button>
+          <button class="btn-primary btn" onclick="createCollection()">Create Collection</button>
+        </div>
+        <div style="margin-top:0.6rem">
+          <div class="field-label" style="margin-bottom:0.3rem">Auth Method</div>
+          <div class="auth-selector">
+            <button class="auth-btn selected" id="auth-keplr" onclick="selectAuth('keplr')">
+              Keplr<small>Browser wallet</small>
+            </button>
+            <button class="auth-btn" id="auth-pk" onclick="selectAuth('pk')">
+              Private Key<small>Direct signing</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right Column: Preview ──────────────────────────────── -->
+    <div class="right-col">
+      <div class="output-wrap">
+        <!-- Tabs -->
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="switchTab('preview')">SVG Preview</button>
+          <button class="tab-btn" onclick="switchTab('template')">Template Code</button>
+          <button class="tab-btn" onclick="switchTab('msg')">InstantiateMsg</button>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar" id="status-bar">
+          <span>Upload an SVG template and spec to begin</span>
+        </div>
+
+        <!-- SVG Preview -->
+        <div id="svg-render">
+          <p style="color:var(--muted);font-size:0.82rem">SVG preview will appear here</p>
+        </div>
+
+        <!-- Template Code (hidden) -->
+        <textarea class="sdl-area" id="template-view" readonly spellcheck="false" style="display:block;max-height:200px;font-size:0.65rem;margin-top:0.5rem;"></textarea>
+
+        <!-- InstantiateMsg (hidden) -->
+        <pre class="sdl-area" id="msg-view" style="display:none"></pre>
+
+        <!-- Seed Slider -->
+        <div class="seed-row">
+          <label>Seed:</label>
+          <input type="range" id="seed-slider" oninput="currentVars=generateTerpVars();loadDefaults();" min="0" max="999" value="42">
+          <span class="seed-val" id="seed-display">42</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="btn-row">
+          <button class="btn" onclick="downloadSvg()">Download SVG</button>
+          <button class="btn" onclick="copyMsg()">Copy Msg</button>
+          <button class="btn" onclick="randomSeed()">Random Seed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="/">permissionless.money</a> &middot;
+  Generative SVG art on Terp Network
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { loadWasm, isWasmReady, parseTemplate, substituteTemplate,
+         validateTemplate, validateSpec, generatePreviewVars,
+         buildInstantiateMsg, uploadCollectionFiles, downloadFile } from '/lib/svg-mint.js';
+import { connectKeplr } from '/lib/auth.js';
+
+// ── State ───────────────────────────────────────────────────────────
+let svgTemplate = '';
+let collectionSpec = null;
+let currentVars = {};
+let currentSeed = 42;
+let authType = 'keplr';
+let currentTab = 'preview';
+let cosmesWallet = null;
+
+const CHAIN_ID = 'morocco-1';
+const RPC = 'https://rpc.terp.network';
+const DENOM = 'uthiol';
+
+// ── Init ────────────────────────────────────────────────────────────
+const wasmLoaded = loadWasm().then(w => {
+  const badge = document.getElementById('wasm-status');
+  if (w) {
+    badge.textContent = 'wasm: active';
+    badge.classList.remove('pending');
+  } else {
+    badge.textContent = 'wasm: js-only';
+    badge.classList.remove('pending');
+    badge.style.color = 'var(--orange)';
+    badge.style.borderColor = 'rgba(255,184,108,0.2)';
+    badge.style.background = 'rgba(255,184,108,0.1)';
+  }
+  return w;
+});
+
+
+
+
+
+function generateTerpVars() {
+  var vars = {};
+  vars["glow-color"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-a"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-b"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-c"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-d"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-e"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-f"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-g"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-h"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-i"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-j"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-k"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-l"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["color-m"] = "rgb(" + (160 + Math.floor(Math.random()*95)) + "," + (240 + Math.floor(Math.random()*15)) + "," + (160 + Math.floor(Math.random()*95)) + ")";
+  vars["pulse-a"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-b"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-c"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-d"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-e"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-f"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-g"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-h"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-i"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-j"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-k"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-l"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["pulse-m"] = (1.2 + Math.random()*3.3).toFixed(2);
+  vars["flicker-a"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-b"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-c"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-d"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-e"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-f"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-g"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-h"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-i"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-j"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-k"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-l"] = (0.08 + Math.random()*0.42).toFixed(2);
+  vars["flicker-m"] = (0.08 + Math.random()*0.42).toFixed(2);
+  return vars;
+}
+
+function loadDefaults() {
+  svgTemplate = atob("PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgCiAgPGRlZnM+CiAgICA8ZmlsdGVyIGlkPSJuZW9uZ2xvdyIgeD0iLTkwJSIgeT0iLTkwJSIgd2lkdGg9IjI4MCUiIGhlaWdodD0iMjgwJSI+CiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSIwIiBzdGREZXZpYXRpb249IjIuMCIgZmxvb2QtY29sb3I9IiR7Z2xvdy1jb2xvcn0iIGZsb29kLW9wYWNpdHk9IjAuOTYiLz4KICAgICAgPGZlRHJvcFNoYWRvdyBkeD0iMCIgZHk9IjAiIHN0ZERldmlhdGlvbj0iNC42IiBmbG9vZC1jb2xvcj0iJHtnbG93LWNvbG9yfSIgZmxvb2Qtb3BhY2l0eT0iMC42OCIvPgogICAgICA8ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iMCIgc3RkRGV2aWF0aW9uPSI5LjIiIGZsb29kLWNvbG9yPSIke2dsb3ctY29sb3J9IiBmbG9vZC1vcGFjaXR5PSIwLjM2Ii8+CiAgICA8L2ZpbHRlcj4KCiAgICA8c3R5bGU+CiAgICAgIAogICAgICAgIEBrZXlmcmFtZXMgbmVvbkJyZWF0aCB7CiAgICAgICAgICAwJSwgMTAwJSB7IHI6IDcuNDsgfQogICAgICAgICAgNTAlICAgICAgeyByOiAxMi44OyB9CiAgICAgICAgfQoKICAgICAgICBAa2V5ZnJhbWVzIHN0cm9iZUZsaWNrZXIgewogICAgICAgICAgMCUsIDE4JSwgMjIlLCAxMDAlIHsgb3BhY2l0eTogMTsgfQogICAgICAgICAgNCUgIHsgb3BhY2l0eTogMC40MjsgfQogICAgICAgICAgOSUgIHsgb3BhY2l0eTogMC45NTsgfQogICAgICAgICAgMTMlIHsgb3BhY2l0eTogMC41MTsgfQogICAgICAgICAgMTclIHsgb3BhY2l0eTogMC44NzsgfQogICAgICAgIH0KCiAgICAgICAgLm9yYiB7CiAgICAgICAgICBhbmltYXRpb246CiAgICAgICAgICAgIG5lb25CcmVhdGggICAgdmFyKC0tcHVsc2UtZHVyKSAgIHZhcigtLXB1bHNlLWRlbGF5KSAgIGluZmluaXRlIGVhc2UtaW4tb3V0LAogICAgICAgICAgICBzdHJvYmVGbGlja2VyIHZhcigtLWZsaWNrZXItZHVyKSB2YXIoLS1mbGlja2VyLWRlbGF5KSBpbmZpbml0ZSBsaW5lYXI7CiAgICAgICAgfQogICAgICAKICAgIDwvc3R5bGU+CiAgPC9kZWZzPgoKICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iYmxhY2siIGZpbGwtb3BhY2l0eT0iMC4yMyIvPgoKICA8ZyBmaWx0ZXI9InVybCgjbmVvbmdsb3cpIj4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjEwMCIgY3k9IjEwMCIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWF9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1hfXM7LS1wdWxzZS1kZWxheTotMC4xMXM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItYX1zOy0tZmxpY2tlci1kZWxheTowczsiLz4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjUyIiBjeT0iMTAwIiByPSI4LjciIGZpbGw9IiR7Y29sb3ItYn0iCiAgICAgICAgICAgIHN0eWxlPSItLXB1bHNlLWR1cjoke3B1bHNlLWJ9czstLXB1bHNlLWRlbGF5Oi0xLjIzczstLWZsaWNrZXItZHVyOiR7ZmxpY2tlci1ifXM7LS1mbGlja2VyLWRlbGF5Oi0wLjA3czsiLz4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjE0OCIgY3k9IjEwMCIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWN9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1jfXM7LS1wdWxzZS1kZWxheTotMC42MnM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItY31zOy0tZmxpY2tlci1kZWxheTowLjIxczsiLz4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjEwMCIgY3k9IjUyIiByPSI4LjciIGZpbGw9IiR7Y29sb3ItZH0iCiAgICAgICAgICAgIHN0eWxlPSItLXB1bHNlLWR1cjoke3B1bHNlLWR9czstLXB1bHNlLWRlbGF5Oi0xLjk3czstLWZsaWNrZXItZHVyOiR7ZmxpY2tlci1kfXM7LS1mbGlja2VyLWRlbGF5Oi0wLjI5czsiLz4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjEwMCIgY3k9IjE0OCIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWV9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1lfXM7LS1wdWxzZS1kZWxheTotMC4zOHM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItZX1zOy0tZmxpY2tlci1kZWxheTotMC4xNHM7Ii8+CgogICAgCiAgICA8Y2lyY2xlIGNsYXNzPSJvcmIiIGN4PSI3NSIgY3k9IjEwMCIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWZ9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1mfXM7LS1wdWxzZS1kZWxheTotMS40OHM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItZn1zOy0tZmxpY2tlci1kZWxheTowLjA5czsiLz4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjEyNSIgY3k9IjEwMCIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWd9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1nfXM7LS1wdWxzZS1kZWxheTotMC44MXM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItZ31zOy0tZmxpY2tlci1kZWxheTotMC4yMnM7Ii8+CgogICAgCiAgICA8Y2lyY2xlIGNsYXNzPSJvcmIiIGN4PSIxMDAiIGN5PSI3NSIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWh9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1ofXM7LS1wdWxzZS1kZWxheTotMS44MnM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItaH1zOy0tZmxpY2tlci1kZWxheTowLjA0czsiLz4KCiAgICAKICAgIDxjaXJjbGUgY2xhc3M9Im9yYiIgY3g9IjEwMCIgY3k9IjEyNSIgcj0iOC43IiBmaWxsPSIke2NvbG9yLWl9IgogICAgICAgICAgICBzdHlsZT0iLS1wdWxzZS1kdXI6JHtwdWxzZS1pfXM7LS1wdWxzZS1kZWxheTotMC4xOXM7LS1mbGlja2VyLWR1cjoke2ZsaWNrZXItaX1zOy0tZmxpY2tlci1kZWxheTotMC4zOXM7Ii8+CgogICAgCiAgICA8Y2lyY2xlIGNsYXNzPSJvcmIiIGN4PSI3NSIgY3k9Ijc1IiByPSI4LjciIGZpbGw9IiR7Y29sb3Itan0iCiAgICAgICAgICAgIHN0eWxlPSItLXB1bHNlLWR1cjoke3B1bHNlLWp9czstLXB1bHNlLWRlbGF5Oi0xLjA5czstLWZsaWNrZXItZHVyOiR7ZmxpY2tlci1qfXM7LS1mbGlja2VyLWRlbGF5OjAuMTRzOyIvPgoKICAgIAogICAgPGNpcmNsZSBjbGFzcz0ib3JiIiBjeD0iNzUiIGN5PSIxMjUiIHI9IjguNyIgZmlsbD0iJHtjb2xvci1rfSIKICAgICAgICAgICAgc3R5bGU9Ii0tcHVsc2UtZHVyOiR7cHVsc2Uta31zOy0tcHVsc2UtZGVsYXk6LTIuMzFzOy0tZmxpY2tlci1kdXI6JHtmbGlja2VyLWt9czstLWZsaWNrZXItZGVsYXk6LTAuMTFzOyIvPgoKICAgIAogICAgPGNpcmNsZSBjbGFzcz0ib3JiIiBjeD0iMTI1IiBjeT0iNzUiIHI9IjguNyIgZmlsbD0iJHtjb2xvci1sfSIKICAgICAgICAgICAgc3R5bGU9Ii0tcHVsc2UtZHVyOiR7cHVsc2UtbH1zOy0tcHVsc2UtZGVsYXk6LTAuNzRzOy0tZmxpY2tlci1kdXI6JHtmbGlja2VyLWx9czstLWZsaWNrZXItZGVsYXk6LTAuMjZzOyIvPgoKICAgIAogICAgPGNpcmNsZSBjbGFzcz0ib3JiIiBjeD0iMTI1IiBjeT0iMTI1IiByPSI4LjciIGZpbGw9IiR7Y29sb3ItbX0iCiAgICAgICAgICAgIHN0eWxlPSItLXB1bHNlLWR1cjoke3B1bHNlLW19czstLXB1bHNlLWRlbGF5Oi0xLjM2czstLWZsaWNrZXItZHVyOiR7ZmxpY2tlci1tfXM7LS1mbGlja2VyLWRlbGF5OjAuMDdzOyIvPgoKICA8L2c+Cjwvc3ZnPgo=");
+  document.getElementById('template-view').value = svgTemplate;
+  document.getElementById('svg-file-name').textContent = 'terp-neon-orbs.svg (default)';
+  currentVars = generateTerpVars();
+  try {
+    var rendered = svgTemplate;
+    for (var k in currentVars) {
+      rendered = rendered.split('${' + k + '}').join(currentVars[k]);
+    }
+    document.getElementById('svg-render').innerHTML = rendered;
+    updateStatus(Object.keys(currentVars).length + ' vars | terp-strobe default loaded', Object.keys(currentVars).length, 0);
+  } catch(e) { console.warn('loadDefaults render error', e); }
+}
+
+async function init() {
+  await wasmLoaded;
+  document.getElementById('svg-file').addEventListener('change', onSvgFileChange);
+  document.getElementById('spec-file').addEventListener('change', onSpecFileChange);
+  document.getElementById('seed-slider').addEventListener('input', (e) => onSeedChange(Number(e.target.value)));
+}
+
+// ── File Handlers ───────────────────────────────────────────────────
+function onSvgFileChange(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('svg-file-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    svgTemplate = ev.target.result;
+    document.getElementById('template-view').value = svgTemplate;
+    const parsed = parseTemplate(svgTemplate);
+    updateStatus(`${parsed.count} vars found`, parsed.count, 0);
+    renderPreview();
+  };
+  reader.readAsText(file);
+}
+
+function onSpecFileChange(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('spec-file-name').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      collectionSpec = JSON.parse(ev.target.result);
+      const validation = validateSpec(collectionSpec);
+      if (!validation.valid) {
+        showToast('Spec issues: ' + validation.errors[0], 'error');
+      } else {
+        showToast(`Spec loaded: ${validation.var_count} variables`, 'success');
+      }
+      buildOverrideFields();
+      renderPreview();
+    } catch (err) {
+      showToast('Invalid JSON: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── Variable Override Fields ────────────────────────────────────────
+function buildOverrideFields() {
+  const container = document.getElementById('var-overrides');
+  container.innerHTML = '';
+  if (!collectionSpec || !collectionSpec.variables) return;
+
+  // Generate current values for display
+  const preview = generatePreviewVars(collectionSpec, currentSeed);
+  currentVars = { ...preview.variables };
+
+  for (const v of collectionSpec.variables) {
+    const row = document.createElement('div');
+    row.className = 'var-override';
+
+    const name = document.createElement('span');
+    name.className = 'var-name';
+    name.textContent = v.name;
+
+    const entropy = document.createElement('span');
+    entropy.className = 'var-entropy';
+    entropy.textContent = currentVars[v.name] || '';
+
+    const input = document.createElement('input');
+    input.value = currentVars[v.name] || '';
+    input.dataset.varName = v.name;
+    input.oninput = () => {
+      currentVars[v.name] = input.value;
+      debouncedRender();
+    };
+
+    row.appendChild(name);
+    row.appendChild(entropy);
+    row.appendChild(input);
+    container.appendChild(row);
+  }
+}
+
+// ── Seed Change ─────────────────────────────────────────────────────
+function onSeedChange(val) {
+  currentSeed = val;
+  document.getElementById('seed-display').textContent = val;
+  if (collectionSpec) {
+    const preview = generatePreviewVars(collectionSpec, currentSeed);
+    currentVars = { ...preview.variables };
+    // Update override field displays
+    const inputs = document.querySelectorAll('#var-overrides .var-override');
+    inputs.forEach(row => {
+      const input = row.querySelector('input');
+      const entropy = row.querySelector('.var-entropy');
+      const varName = input.dataset.varName;
+      if (varName && currentVars[varName] !== undefined) {
+        input.value = currentVars[varName];
+        entropy.textContent = currentVars[varName];
+      }
+    });
+  }
+  renderPreview();
+}
+
+// ── Rendering ───────────────────────────────────────────────────────
+let renderTimer = null;
+function debouncedRender() {
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(renderPreview, 200);
+}
+
+function renderPreview() {
+  if (!svgTemplate) return;
+
+  try {
+    // If we have a spec + vars, substitute and render
+    if (collectionSpec && Object.keys(currentVars).length > 0) {
+      const rendered = substituteTemplate(svgTemplate, currentVars);
+      document.getElementById('svg-render').innerHTML = rendered;
+
+      // Update template validation status
+      const tv = validateTemplate(svgTemplate, collectionSpec);
+      const missing = tv.missing_in_template.length;
+      const extra = tv.extra_in_template.length;
+      if (tv.valid) {
+        updateStatus(`${tv.template_vars.length} vars | all matched`, tv.template_vars.length, 0);
+      } else {
+        updateStatus(
+          `${tv.template_vars.length} vars found`,
+          tv.template_vars.length - extra,
+          missing + extra
+        );
+      }
+    } else {
+      // No spec — just show the raw SVG
+      const parsed = parseTemplate(svgTemplate);
+      document.getElementById('svg-render').innerHTML = svgTemplate;
+      updateStatus(`${parsed.count} vars found | load spec for preview`, parsed.count, 0);
+    }
+
+    // Update msg view
+    updateMsgView();
+  } catch (e) {
+    updateStatus(`Error: ${e.message || e}`, 0, 1);
+  }
+}
+
+function updateMsgView() {
+  try {
+    const form = getFormData();
+    if (form.name && form.symbol && svgTemplate && collectionSpec) {
+      const msg = buildInstantiateMsg(form, svgTemplate, collectionSpec);
+      document.getElementById('msg-view').textContent = JSON.stringify(msg, null, 2);
+    }
+  } catch { /* ignore until form is complete */ }
+}
+
+function getFormData() {
+  return {
+    name: document.getElementById('col-name').value,
+    symbol: document.getElementById('col-symbol').value,
+    unit_price: document.getElementById('col-price').value || '0',
+    max_token_supply: Number(document.getElementById('col-supply').value) || 100,
+    label: document.getElementById('col-label').value || 'svg-collection',
+  };
+}
+
+function updateStatus(text, count, missing) {
+  const bar = document.getElementById('status-bar');
+  if (missing > 0) {
+    bar.innerHTML = `<span>${text}</span><span class="missing">${missing} issues</span>`;
+  } else if (count > 0) {
+    bar.innerHTML = `<span>${text}</span><span class="count">ready</span>`;
+  } else {
+    bar.innerHTML = `<span>${text}</span>`;
+  }
+}
+
+// ── Tab Switching ───────────────────────────────────────────────────
+window.switchTab = function(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['preview', 'template', 'msg'][i] === tab);
+  });
+  document.getElementById('svg-render').style.display = tab === 'preview' ? '' : 'none';
+  document.getElementById('template-view').style.display = tab === 'template' ? '' : 'none';
+  document.getElementById('msg-view').style.display = tab === 'msg' ? '' : 'none';
+
+  if (tab === 'preview') renderPreview();
+  if (tab === 'msg') updateMsgView();
+};
+
+// ── Validate ────────────────────────────────────────────────────────
+window.validateAll = function() {
+  if (!svgTemplate) return showToast('Load an SVG template first', 'error');
+  if (!collectionSpec) return showToast('Load a collection spec first', 'error');
+
+  const sv = validateSpec(collectionSpec);
+  const tv = validateTemplate(svgTemplate, collectionSpec);
+  const allErrors = [...sv.errors, ...tv.errors];
+
+  if (allErrors.length === 0) {
+    showToast('Validation passed — all clear', 'success');
+    updateStatus(`${tv.template_vars.length} vars | all matched`, tv.template_vars.length, 0);
+  } else {
+    showToast(`${allErrors.length} issue(s): ${allErrors[0]}`, 'error');
+    updateStatus(`${allErrors.length} issues`, 0, allErrors.length);
+  }
+};
+
+// ── Upload to S3 ────────────────────────────────────────────────────
+window.uploadToS3 = async function() {
+  if (!svgTemplate) return showToast('Load an SVG template first', 'error');
+  if (!collectionSpec) return showToast('Load a collection spec first', 'error');
+  try {
+    const { svgKey, specKey } = await uploadCollectionFiles(svgTemplate, collectionSpec);
+    showToast(`Uploaded: ${svgKey}`, 'success');
+  } catch (e) {
+    showToast('Upload failed: ' + (e.message || e), 'error');
+  }
+};
+
+// ── Create Collection ───────────────────────────────────────────────
+window.createCollection = async function() {
+  if (!svgTemplate) return showToast('Load an SVG template first', 'error');
+  if (!collectionSpec) return showToast('Load a collection spec first', 'error');
+
+  const form = getFormData();
+  if (!form.name || !form.symbol) return showToast('Name and symbol required', 'error');
+
+  try {
+    const msg = buildInstantiateMsg(form, svgTemplate, collectionSpec);
+
+    if (authType === 'keplr') {
+      const { address } = await connectKeplr();
+      showToast(`Connected: ${address.slice(0, 12)}...`, 'success');
+      // TODO: broadcast via CwSvgMinterClient
+      console.log('InstantiateMsg:', JSON.stringify(msg, null, 2));
+      showToast('Message built — broadcast integration pending', 'success');
+    } else {
+      showToast('Private key signing not yet implemented', 'error');
+    }
+  } catch (e) {
+    showToast('Error: ' + (e.message || e), 'error');
+  }
+};
+
+// ── Auth Selector ───────────────────────────────────────────────────
+window.selectAuth = function(type) {
+  authType = type;
+  document.getElementById('auth-keplr').classList.toggle('selected', type === 'keplr');
+  document.getElementById('auth-pk').classList.toggle('selected', type === 'pk');
+};
+
+// ── Download / Copy / Random ────────────────────────────────────────
+window.downloadSvg = function() {
+  if (!svgTemplate) return showToast('No SVG to download', 'error');
+  try {
+    const rendered = collectionSpec && Object.keys(currentVars).length > 0
+      ? substituteTemplate(svgTemplate, currentVars)
+      : svgTemplate;
+    downloadFile(rendered, `preview-seed${currentSeed}.svg`, 'image/svg+xml');
+    showToast('SVG downloaded', 'success');
+  } catch (e) {
+    showToast('Download failed: ' + e.message, 'error');
+  }
+};
+
+window.copyMsg = function() {
+  const content = document.getElementById('msg-view').textContent;
+  if (!content.trim()) return showToast('No message to copy', 'error');
+  navigator.clipboard.writeText(content).then(
+    () => showToast('Copied to clipboard', 'success'),
+    () => showToast('Copy failed', 'error')
+  );
+};
+
+window.randomSeed = function() {
+  const seed = Math.floor(Math.random() * 1000);
+  document.getElementById('seed-slider').value = seed;
+  onSeedChange(seed);
+};
+
+// ── Toast ───────────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast visible ' + type;
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('visible'), 3000);
+}
+
+// ── Boot ────────────────────────────────────────────────────────────
+init();
+// Load defaults immediately without waiting for WASM
+try { loadDefaults(); } catch(e) { console.warn('loadDefaults error:', e); }
+</script>
+
+
+
+<div id="fab-nav" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;">
+<div id="fab-menu" style="position:absolute;bottom:58px;right:0;display:none;flex-direction:column;gap:2px;padding:0.5rem;background:rgba(10,10,15,0.95);border:1px solid rgba(177,235,235,0.2);border-radius:12px;min-width:150px;box-shadow:0 8px 40px rgba(0,0,0,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
+<div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(177,235,235,0.4);padding:0.25rem 0.75rem 0.1rem;font-family:Satoshi,sans-serif;">Navigate</div>
+<a href="/mint" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Mint</a>
+<a href="/svg-mint" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#b1ebeb;background:rgba(177,235,235,0.08);font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">SVG Mint</a>
+<div style="height:1px;background:rgba(177,235,235,0.1);margin:0.15rem 0.5rem;"></div>
+<a href="https://github.com/permissionlessweb" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;" target="_blank">GitHub</a>
+</div>
+<button onclick="var m=document.getElementById('fab-menu');m.style.display=m.style.display==='flex'?'none':'flex';" style="width:48px;height:48px;border-radius:50%;border:none;background:#b1ebeb;color:#08090d;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;box-shadow:0 4px 20px rgba(177,235,235,0.3);" aria-label="Menu">+</button>
+</div>
+<script>document.addEventListener("click",function(e){var f=document.getElementById("fab-nav");if(f&&!f.contains(e.target))document.getElementById("fab-menu").style.display="none"});</script>
+</body>
+</html>

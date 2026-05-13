@@ -125,8 +125,8 @@
       "lib/whitelist-merkletree.js": "d78a1780b424b847840373be308477e94184c2caa1a11388c0a26b49d21fc036"
     },
     "installers": {
-      "get/terp-installer.py": "6fc64444ce65e63a96ade2af4920481e51362f9b5513300300faf1bf48232485",
-      "get/terp-installer.sh": "8a1d26facf8bda472a6275ad94fe690eae0c25854131b341a509d5aeb3c09cc6"
+      "get/terp-installer.py": "26ae711cdcc64ef86bfbbc19734de5ffab026f321d75ce6fd9cc10b39a2f4105",
+      "get/terp-installer.sh": "44ef030ea74c7902ec0dd2fc0cda9c22f8b724ca6ee44ac1df2eed3db14235de"
     }
   },
   "version": "1.0.0"

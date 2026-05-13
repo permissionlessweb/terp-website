@@ -2,12 +2,21 @@
 
 Official website for Terp Network, featuring the terp-core installer integration.
 
-## Features
+## TODO
+- svg minting and viewing page
+- smart-account registration
+- view-text-records | manage text records (update,remove,add)
+- optimized mobile view
+- replcae pythong script with native terp installer
 
-- Responsive dark-themed landing page with animated backgrounds
-- Integrated terp-core installer with tab-based installation options
-- Docker-ready deployment
-- SEO optimized with sitemap and meta tags
+
+## Features
+- wallet connecting && chain client via cosmes: <https://www.npmjs.com/package/@goblinhunt/cosmes>
+- zero-config installer for terp-core
+- svg collection mint, browse and view
+- terp-account-billboard (TAB) nft mints
+- local testing suite for development sessions
+
 
 ## Development
 
@@ -58,79 +67,9 @@ curl -fsSL https://terp.network/get | bash -s -- --install node --network morocc
 uvx --from terp-core terpd
 ```
 
-### Verifying Installation Script Integrity
-
-Before running the installation scripts, verify their integrity using checksums:
-
-#### SHA256 Checksums
-
-```
-0e2743c117a3be8e5648427e0e1d8863b7ac59e1e1cff428152eda99cf9dc970  terp-installer.py
-a233f0863b439273e772b14d61b985c8a20e719c72506399adebff03551596c7  terp-installer.sh
-```
-
-#### BLAKE3 Checksums
-
-```
-3113805970499a614c8dda2b8d2730bade6f0b0a3d5a8fa99bac4e9856396cee  terp-installer.py
-8c1826931f3c9c620dddabe6756881a2a51aa977c24b60842eca697dfd40ebb7  terp-installer.sh
-```
-
-#### Verification Instructions
-
-**Using SHA256:**
-
-```bash
-# Download the shell script
-curl -sL https://terp.network/get > terp-installer.sh
-
-# Verify with sha256sum (Linux)
-echo "a233f0863b439273e772b14d61b985c8a20e719c72506399adebff03551596c7  terp-installer.sh" | sha256sum -c
-
-# Verify with shasum (macOS)
-echo "a233f0863b439273e772b14d61b985c8a20e719c72506399adebff03551596c7  terp-installer.sh" | shasum -a 256 -c
-```
-
-**Using BLAKE3:**
-
-```bash
-# Download the shell script
-curl -sL https://terp.network/get > terp-installer.sh
-
-# Install b3sum if not already installed
-# macOS: brew install b3sum
-# Linux: cargo install b3sum
-# or download from: https://github.com/BLAKE3-team/BLAKE3
-
-# Verify with b3sum
-echo "8c1826931f3c9c620dddabe6756881a2a51aa977c24b60842eca697dfd40ebb7  terp-installer.sh" | b3sum --check
-```
-
-**Expected output on successful verification:**
-
-```
-terp-installer.sh: OK
-```
-
 ⚠️ **Security Note:** Always verify checksums from multiple trusted sources (GitHub releases, official documentation, etc.) to ensure the checksums themselves haven't been tampered with.
 
 ## Running Locally
-
-### Using Docker
-
-Build and run the Docker container from repo root:
-
-```bash
-docker-compose -f docker/docker-compose.yml up --build
-```
-
-Or from the docker directory:
-
-```bash
-cd docker && docker-compose up --build
-```
-
-The website will be available at `http://localhost:8080`
 
 ### Manual Build
 
@@ -179,36 +118,7 @@ terp.network/
 ```
 
 ## Deployment
-
-### Docker Registry
-
-Push single architecture to Docker registry:
-
-```bash
-docker-compose -f docker/docker-compose.yml build
-docker push terpnetwork/terp-website:latest
-```
-
-Push multi-architecture image to Docker registry:
-
-```bash
-# Build and push for both amd64 and arm64
-docker buildx build -f docker/Dockerfile \
-  --platform linux/amd64,linux/arm64 \
-  -t terpnetwork/terp-website:latest \
-  --push .
-```
-
-### Akash Network
-
-Deploy to Akash using the provided SDL:
-
-```bash
-akash tx deployment create docker/deploy.yaml --from <your-wallet>
-```
-
-See `docker/deploy.yaml` for the deployment manifest.
-
+  
 ## Installation Script Endpoints
 
 - `/get` - Shell wrapper script (downloads and runs Python installer)
