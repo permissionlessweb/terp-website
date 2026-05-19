@@ -24,13 +24,14 @@ cw-orch = { path = "../../../cw-orchestrator/cw-orch", features = ["daemon"] }
 cw-headstash = { path = "../../../headstash/contract/cw-headstash", features = ["interface"] }
 cw-headstash-manifold = { path = "../../../headstash/contract/manifold", features = ["interface"] }
 cw-infuser-scripts = { path = "../../../cw-infuser/scripts" }
-# dao-testing = { path = "../../../dao-contracts/packages/dao-testing", optional = true }
+dao-testing = { path = "../../../dao-contracts/packages/dao-testing" }
 shit-scripts = { path = "../../../shitstrap/scripts/shit-scripts" }
 terp-account-scripts = { path = "../../../terp-account-billboards/scripts" }
 zk-test-press = { path = "../../../headstash/test-press", features = ["interface"] }
 
 # Container lifecycle
 ict-rs = { path = "../../../ict-rs/ict-rs", features = ["docker", "terp", "testing"] }
+cw4 = { path = "../../../cw-plus/packages/cw4" }
 
 # CLI + runtime
 anyhow = "1.0"

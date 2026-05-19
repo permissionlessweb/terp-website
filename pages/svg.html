@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="Browse and mint generative on-chain SVG art on Terp Network. Fully client-side rendered, parameterized by on-chain data, unique to every token.">
+    <meta name="description"
+        content="Browse and mint generative on-chain SVG art on Terp Network. Fully client-side rendered, parameterized by on-chain data, unique to every token.">
     <title>SVG | Terp Network — Generative On-Chain Art</title>
 
     <meta property="og:title" content="SVG | Terp Network — Generative On-Chain Art">
-    <meta property="og:description" content="Fully client-side rendered generative SVGs, parameterized by on-chain token data.">
+    <meta property="og:description"
+        content="Fully client-side rendered generative SVGs, parameterized by on-chain token data.">
     <meta property="og:type" content="website">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="SVG | Terp Network — Generative On-Chain Art">
@@ -24,14 +26,42 @@
     <link rel="stylesheet" href="/public/global.css">
 
     <style>
+        .btn-docs {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(152, 232, 193, 0.2);
+            background: rgba(152, 232, 193, 0.06);
+            color: rgba(152, 232, 193, 0.6);
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-docs:hover {
+            background: rgba(152, 232, 193, 0.12);
+            border-color: rgba(152, 232, 193, 0.4);
+            color: #98e8c1;
+        }
+
         .btn-collection {
             background: rgba(189, 147, 249, 0.1);
             border: 1px solid rgba(189, 147, 249, 0.3);
-            color: #bd93f9; padding: 0.5rem 1rem;
-            font-family: 'Satoshi', sans-serif; font-size: 0.8rem;
-            cursor: pointer; border-radius: 4px;
+            color: #bd93f9;
+            padding: 0.5rem 1rem;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
             transition: all 0.2s ease;
         }
+
         .btn-collection:hover {
             background: rgba(189, 147, 249, 0.2);
             border-color: rgba(189, 147, 249, 0.5);
@@ -39,17 +69,21 @@
 
         /* Main content */
         .main {
-            position: relative; z-index: 1;
-            max-width: 1100px; width: 100%;
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            width: 100%;
             margin: 0 auto;
             padding: 6rem 1.5rem 3rem;
             min-height: 100vh;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
         .page-title {
-            font-size: 2.2rem; font-weight: 500;
+            font-size: 2.2rem;
+            font-weight: 500;
             color: #cfffcf;
             text-shadow: 0 0 30px rgba(183, 255, 183, 0.07);
             text-align: center;
@@ -57,35 +91,48 @@
         }
 
         .page-subtitle {
-            font-size: 0.85rem; color: #ffffda;
+            font-size: 0.85rem;
+            color: #ffffda;
             text-shadow: 0 0 3px rgba(71, 50, 102, 0.9);
-            text-transform: uppercase; letter-spacing: 0.12em;
-            text-align: center; margin-bottom: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            text-align: center;
+            margin-bottom: 2.5rem;
         }
 
         /* Loading */
         .loading {
-            display: flex; flex-direction: column;
-            align-items: center; gap: 1rem;
-            padding: 4rem 0; color: #d2d3d8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 4rem 0;
+            color: #d2d3d8;
         }
 
         .spinner {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border: 2px solid rgba(152, 232, 193, 0.2);
             border-top-color: #98e8c1;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Demo notice */
         .demo-notice {
-            margin-top: 1rem; padding: 0.6rem 1.2rem;
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
             background: rgba(189, 147, 249, 0.08);
             border: 1px solid rgba(189, 147, 249, 0.2);
-            border-radius: 4px; font-size: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
             color: rgba(189, 147, 249, 0.8);
             text-align: center;
         }
@@ -101,10 +148,13 @@
         .collection-card {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(152, 232, 193, 0.1);
-            border-radius: 10px; overflow: hidden;
+            border-radius: 10px;
+            overflow: hidden;
             transition: all 0.2s ease;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
+
         .collection-card:hover {
             border-color: rgba(152, 232, 193, 0.3);
             box-shadow: 0 0 25px rgba(152, 232, 193, 0.06);
@@ -112,58 +162,85 @@
         }
 
         .col-card-preview {
-            aspect-ratio: 1; overflow: hidden;
+            aspect-ratio: 1;
+            overflow: hidden;
             background: #050508;
             flex-shrink: 0;
         }
-        .col-card-preview svg { width: 100%; height: 100%; display: block; }
+
+        .col-card-preview svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
         .col-card-body {
             padding: 1rem;
-            display: flex; flex-direction: column;
-            gap: 0.5rem; flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
         }
 
         .col-card-name {
-            font-size: 1rem; font-weight: 500; color: #cfffcf;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #cfffcf;
         }
 
         .col-card-symbol {
             font-size: 0.65rem;
             color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .col-card-meta {
-            display: flex; gap: 1rem; flex-wrap: wrap;
-            margin-top: auto; padding-top: 0.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 0.5rem;
         }
 
         .col-card-stat {
-            display: flex; flex-direction: column; gap: 0.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
         }
+
         .col-stat-label {
-            font-size: 0.6rem; color: rgba(207, 255, 207, 0.4);
-            text-transform: uppercase; letter-spacing: 0.08em;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
+
         .col-stat-value {
-            font-size: 0.85rem; color: #98e8c1; font-weight: 500;
+            font-size: 0.85rem;
+            color: #98e8c1;
+            font-weight: 500;
         }
 
         .col-status-badge {
-            font-size: 0.65rem; padding: 0.2rem 0.5rem;
-            border-radius: 3px; width: fit-content;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            width: fit-content;
         }
+
         .col-status-badge.live {
             background: rgba(152, 232, 193, 0.1);
             border: 1px solid rgba(152, 232, 193, 0.25);
             color: #98e8c1;
         }
+
         .col-status-badge.ended {
             background: rgba(254, 125, 125, 0.1);
             border: 1px solid rgba(254, 125, 125, 0.25);
             color: #fe7d7d;
         }
+
         .col-status-badge.upcoming {
             background: rgba(189, 147, 249, 0.1);
             border: 1px solid rgba(189, 147, 249, 0.25);
@@ -174,12 +251,19 @@
             margin-top: 0.75rem;
             background: rgba(152, 232, 193, 0.08);
             border: 1px solid rgba(152, 232, 193, 0.25);
-            color: #98e8c1; padding: 0.55rem 1rem;
-            font-family: 'Satoshi', sans-serif; font-size: 0.8rem;
-            cursor: pointer; border-radius: 5px;
-            transition: all 0.2s ease; text-align: center;
-            font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em;
+            color: #98e8c1;
+            padding: 0.55rem 1rem;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
+
         .btn-browse:hover {
             background: rgba(152, 232, 193, 0.16);
             border-color: rgba(152, 232, 193, 0.45);
@@ -187,15 +271,22 @@
 
         /* ─── Collection Detail (collection view) ─── */
         .btn-back {
-            display: flex; align-items: center; gap: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
             background: rgba(152, 232, 193, 0.06);
             border: 1px solid rgba(152, 232, 193, 0.15);
-            color: #98e8c1; padding: 0.45rem 0.9rem;
-            font-family: 'Satoshi', sans-serif; font-size: 0.8rem;
-            cursor: pointer; border-radius: 4px;
+            color: #98e8c1;
+            padding: 0.45rem 0.9rem;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
             transition: all 0.2s ease;
-            align-self: flex-start; margin-bottom: 1.5rem;
+            align-self: flex-start;
+            margin-bottom: 1.5rem;
         }
+
         .btn-back:hover {
             background: rgba(152, 232, 193, 0.12);
             border-color: rgba(152, 232, 193, 0.3);
@@ -203,82 +294,155 @@
 
         .col-detail-header {
             width: 100%;
-            display: flex; gap: 2rem; align-items: flex-start;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
             margin-bottom: 1.5rem;
         }
 
         .col-detail-preview {
-            width: 300px; height: 300px; flex-shrink: 0;
-            border-radius: 10px; overflow: hidden;
+            width: 300px;
+            height: 300px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            overflow: hidden;
             background: #050508;
             border: 1px solid rgba(152, 232, 193, 0.12);
         }
-        .col-detail-preview svg { width: 100%; height: 100%; display: block; }
+
+        .col-detail-preview svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
         .col-detail-info {
-            flex: 1; display: flex; flex-direction: column;
-            gap: 0.6rem; min-width: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            min-width: 0;
         }
 
         .col-detail-name {
-            font-size: 1.8rem; font-weight: 500; color: #cfffcf;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #cfffcf;
         }
 
         .col-detail-desc {
-            font-size: 0.9rem; line-height: 1.6; color: #d2d3d8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #d2d3d8;
         }
 
         .col-detail-stats {
-            display: flex; gap: 1.5rem; flex-wrap: wrap;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
             margin-top: 0.25rem;
         }
 
         .col-detail-stat {
-            display: flex; flex-direction: column; gap: 0.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
         }
+
         .detail-stat-label {
-            font-size: 0.6rem; color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
+
         .detail-stat-value {
-            font-size: 1rem; color: #98e8c1; font-weight: 500;
+            font-size: 1rem;
+            color: #98e8c1;
+            font-weight: 500;
         }
 
         /* ─── Price Tiers ─── */
-        .price-tiers-wrap { margin-top: 0.75rem; }
+        .price-tiers-wrap {
+            margin-top: 0.75rem;
+        }
+
         .price-tiers-label {
-            font-size: 0.6rem; color: rgba(207,255,207,0.45);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 0.35rem;
         }
-        .price-tiers { display: flex; flex-direction: column; gap: 0.3rem; }
+
+        .price-tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
         .price-tier {
-            display: flex; align-items: center; gap: 0.55rem;
-            padding: 0.28rem 0.6rem; border-radius: 5px;
-            border: 1px solid transparent; font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.28rem 0.6rem;
+            border-radius: 5px;
+            border: 1px solid transparent;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
+
         .price-tier.ended {
-            opacity: 0.3; filter: blur(0.3px);
-            color: rgba(207,255,207,0.4);
+            opacity: 0.3;
+            filter: blur(0.3px);
+            color: rgba(207, 255, 207, 0.4);
         }
+
         .price-tier.current {
-            background: rgba(152,232,193,0.07);
-            border-color: rgba(152,232,193,0.28);
+            background: rgba(152, 232, 193, 0.07);
+            border-color: rgba(152, 232, 193, 0.28);
             color: #98e8c1;
         }
-        .price-tier.future { color: rgba(207,255,207,0.55); }
-        .price-tier-dot {
-            width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+
+        .price-tier.future {
+            color: rgba(207, 255, 207, 0.55);
         }
-        .price-tier.ended   .price-tier-dot { background: rgba(152,232,193,0.3); }
-        .price-tier.current .price-tier-dot { background: #98e8c1; box-shadow: 0 0 5px rgba(152,232,193,0.7); }
-        .price-tier.future  .price-tier-dot { background: rgba(152,232,193,0.35); }
-        .price-tier-range { flex: 1; font-size: 0.75rem; opacity: 0.8; }
-        .price-tier-price { font-weight: 600; }
+
+        .price-tier-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .price-tier.ended .price-tier-dot {
+            background: rgba(152, 232, 193, 0.3);
+        }
+
+        .price-tier.current .price-tier-dot {
+            background: #98e8c1;
+            box-shadow: 0 0 5px rgba(152, 232, 193, 0.7);
+        }
+
+        .price-tier.future .price-tier-dot {
+            background: rgba(152, 232, 193, 0.35);
+        }
+
+        .price-tier-range {
+            flex: 1;
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .price-tier-price {
+            font-weight: 600;
+        }
+
         .price-tier-current-tag {
-            font-size: 0.6rem; opacity: 0.65;
-            letter-spacing: 0.04em; text-transform: uppercase;
+            font-size: 0.6rem;
+            opacity: 0.65;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
         /* ─── Mint Panel ─── */
@@ -286,190 +450,356 @@
             width: 100%;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(152, 232, 193, 0.12);
-            border-radius: 8px; padding: 1.2rem 1.5rem;
-            display: flex; align-items: center;
-            gap: 1.5rem; flex-wrap: wrap;
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
             margin-bottom: 1.5rem;
         }
 
         .mint-panel-price {
-            display: flex; flex-direction: column; gap: 0.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
         }
+
         .mint-panel-price-label {
-            font-size: 0.6rem; color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
+
         .mint-panel-price-value {
-            font-size: 1.1rem; color: #98e8c1; font-weight: 500;
+            font-size: 1.1rem;
+            color: #98e8c1;
+            font-weight: 500;
         }
 
         .qty-row {
-            display: flex; align-items: center; gap: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
         }
+
         .qty-btn {
-            width: 32px; height: 32px;
+            width: 32px;
+            height: 32px;
             background: rgba(152, 232, 193, 0.08);
             border: 1px solid rgba(152, 232, 193, 0.25);
-            color: #98e8c1; font-size: 1.1rem;
-            cursor: pointer; border-radius: 5px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease; flex-shrink: 0;
+            color: #98e8c1;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
             font-family: 'Satoshi', sans-serif;
         }
+
         .qty-btn:hover {
             background: rgba(152, 232, 193, 0.16);
             border-color: rgba(152, 232, 193, 0.4);
         }
-        .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .qty-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
 
         .qty-display {
-            font-size: 1.2rem; font-weight: 700;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: #f8f8f2;
-            min-width: 1.8rem; text-align: center;
+            min-width: 1.8rem;
+            text-align: center;
         }
 
         .mint-total {
-            display: flex; flex-direction: column; gap: 0.1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
         }
+
         .mint-total-label {
-            font-size: 0.6rem; color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
+
         .mint-total-value {
-            font-size: 1rem; color: #cfffcf; font-weight: 500;
+            font-size: 1rem;
+            color: #cfffcf;
+            font-weight: 500;
         }
 
         .btn-mint {
             background: linear-gradient(135deg, rgba(152, 232, 193, 0.15), rgba(152, 232, 193, 0.08));
             border: 1px solid rgba(152, 232, 193, 0.4);
-            color: #cfffcf; padding: 0.75rem 1.8rem;
+            color: #cfffcf;
+            padding: 0.75rem 1.8rem;
             font-family: 'Satoshi', sans-serif;
-            font-size: 0.95rem; font-weight: 500;
-            cursor: pointer; border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
             transition: all 0.3s ease;
-            text-transform: uppercase; letter-spacing: 0.1em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-left: auto;
         }
+
         .btn-mint:hover {
             background: linear-gradient(135deg, rgba(152, 232, 193, 0.25), rgba(152, 232, 193, 0.15));
             border-color: rgba(152, 232, 193, 0.6);
             box-shadow: 0 0 25px rgba(152, 232, 193, 0.15);
             transform: translateY(-1px);
         }
-        .btn-mint:active { transform: translateY(0); }
+
+        .btn-mint:active {
+            transform: translateY(0);
+        }
+
         .btn-mint:disabled {
-            opacity: 0.4; cursor: not-allowed;
-            transform: none; box-shadow: none;
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         /* ─── Payment Section (shitstrap options inside mint-panel) ─── */
         .payment-section {
-            width: 100%; flex-basis: 100%;
+            width: 100%;
+            flex-basis: 100%;
             border-top: 1px solid rgba(152, 232, 193, 0.08);
-            padding-top: 0.9rem; margin-top: 0.2rem;
+            padding-top: 0.9rem;
+            margin-top: 0.2rem;
         }
+
         .payment-section-label {
-            font-size: 0.6rem; color: rgba(207, 255, 207, 0.45);
-            text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.5rem;
         }
+
         .payment-row {
-            display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: flex-start;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: flex-start;
         }
+
         .payment-chip {
             background: rgba(152, 232, 193, 0.05);
             border: 1px solid rgba(152, 232, 193, 0.18);
-            border-radius: 6px; padding: 0.35rem 0.6rem;
-            display: flex; flex-direction: column; gap: 0.1rem;
+            border-radius: 6px;
+            padding: 0.35rem 0.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
             font-size: 0.78rem;
         }
-        .payment-chip.shitstrap-chip { border-color: rgba(189, 147, 249, 0.3); }
-        .payment-chip.insufficient { border-color: rgba(255, 85, 85, 0.3); }
-        .chip-label { font-size: 0.6rem; color: rgba(207, 255, 207, 0.4); text-transform: uppercase; letter-spacing: 0.08em; }
-        .chip-denom { font-size: 0.72rem; color: rgba(207, 255, 207, 0.65); }
-        .chip-amount { color: #98e8c1; font-weight: 500; }
-        .chip-insufficient { color: rgba(255, 120, 120, 0.8); font-size: 0.78rem; }
+
+        .payment-chip.shitstrap-chip {
+            border-color: rgba(189, 147, 249, 0.3);
+        }
+
+        .payment-chip.insufficient {
+            border-color: rgba(255, 85, 85, 0.3);
+        }
+
+        .chip-label {
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .chip-denom {
+            font-size: 0.72rem;
+            color: rgba(207, 255, 207, 0.65);
+        }
+
+        .chip-amount {
+            color: #98e8c1;
+            font-weight: 500;
+        }
+
+        .chip-insufficient {
+            color: rgba(255, 120, 120, 0.8);
+            font-size: 0.78rem;
+        }
 
         /* ─── Confirm Panel ─── */
         .confirm-panel {
-            width: 100%; flex-basis: 100%;
+            width: 100%;
+            flex-basis: 100%;
             background: rgba(152, 232, 193, 0.03);
             border: 1px solid rgba(152, 232, 193, 0.2);
-            border-radius: 7px; padding: 1rem 1.2rem;
+            border-radius: 7px;
+            padding: 1rem 1.2rem;
             margin-top: 0.6rem;
         }
+
         .confirm-title {
-            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em;
-            color: rgba(207, 255, 207, 0.45); margin-bottom: 0.75rem;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: rgba(207, 255, 207, 0.45);
+            margin-bottom: 0.75rem;
         }
+
         .confirm-step {
-            display: flex; align-items: center; gap: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
             padding: 0.35rem 0;
             border-bottom: 1px solid rgba(152, 232, 193, 0.06);
             font-size: 0.85rem;
         }
-        .confirm-step:last-child { border-bottom: none; }
-        .confirm-step-icon { color: rgba(207, 255, 207, 0.35); font-size: 0.9rem; width: 1.2rem; text-align: center; }
-        .confirm-step-desc { color: #d2d3d8; flex: 1; }
-        .confirm-step-amount { color: #98e8c1; font-weight: 500; white-space: nowrap; }
-        .confirm-actions {
-            display: flex; gap: 0.6rem; margin-top: 0.85rem; justify-content: flex-end;
+
+        .confirm-step:last-child {
+            border-bottom: none;
         }
+
+        .confirm-step-icon {
+            color: rgba(207, 255, 207, 0.35);
+            font-size: 0.9rem;
+            width: 1.2rem;
+            text-align: center;
+        }
+
+        .confirm-step-desc {
+            color: #d2d3d8;
+            flex: 1;
+        }
+
+        .confirm-step-amount {
+            color: #98e8c1;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+            justify-content: flex-end;
+        }
+
         .btn-cancel-confirm {
             background: transparent;
             border: 1px solid rgba(152, 232, 193, 0.18);
             color: rgba(207, 255, 207, 0.55);
-            padding: 0.45rem 1rem; border-radius: 5px;
-            cursor: pointer; font-size: 0.82rem;
+            padding: 0.45rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.82rem;
             font-family: 'Satoshi', sans-serif;
             transition: border-color 0.2s;
         }
-        .btn-cancel-confirm:hover { border-color: rgba(152, 232, 193, 0.35); }
+
+        .btn-cancel-confirm:hover {
+            border-color: rgba(152, 232, 193, 0.35);
+        }
+
         .btn-confirm-mint {
             background: linear-gradient(135deg, rgba(152, 232, 193, 0.22), rgba(152, 232, 193, 0.12));
             border: 1px solid rgba(152, 232, 193, 0.5);
-            color: #cfffcf; padding: 0.45rem 1.4rem;
-            border-radius: 5px; cursor: pointer;
-            font-size: 0.82rem; font-weight: 500;
+            color: #cfffcf;
+            padding: 0.45rem 1.4rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
             font-family: 'Satoshi', sans-serif;
-            text-transform: uppercase; letter-spacing: 0.08em;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
             transition: all 0.2s;
         }
-        .btn-confirm-mint:hover { box-shadow: 0 0 14px rgba(152, 232, 193, 0.15); }
-        .btn-confirm-mint:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+        .btn-confirm-mint:hover {
+            box-shadow: 0 0 14px rgba(152, 232, 193, 0.15);
+        }
+
+        .btn-confirm-mint:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
 
         /* ─── Whitelist badge ─── */
-        #whitelist-badge { margin-bottom: 0.5rem; }
-        .wl-badge {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.2rem 0.7rem; border-radius: 999px;
-            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+        #whitelist-badge {
+            margin-bottom: 0.5rem;
         }
-        .wl-eligible   { background: rgba(152,232,193,0.12); color: rgb(152,232,193); border: 1px solid rgba(152,232,193,0.3); }
-        .wl-ineligible { background: rgba(255,184,108,0.10); color: rgb(255,184,108); border: 1px solid rgba(255,184,108,0.25); }
+
+        .wl-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+
+        .wl-eligible {
+            background: rgba(152, 232, 193, 0.12);
+            color: rgb(152, 232, 193);
+            border: 1px solid rgba(152, 232, 193, 0.3);
+        }
+
+        .wl-ineligible {
+            background: rgba(255, 184, 108, 0.10);
+            color: rgb(255, 184, 108);
+            border: 1px solid rgba(255, 184, 108, 0.25);
+        }
 
         /* ─── Filter Tabs ─── */
         .filter-row {
             width: 100%;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 1rem;
         }
 
+        .demo-notice.orange {
+            background: rgba(255, 184, 108, 0.1);
+            border: 1px solid rgba(255, 184, 108, 0.3);
+            color: #ffb86c;
+        }
+
         .filter-tabs {
-            display: flex; gap: 0.4rem;
+            display: flex;
+            gap: 0.4rem;
         }
 
         .filter-btn {
             background: rgba(152, 232, 193, 0.04);
             border: 1px solid rgba(152, 232, 193, 0.12);
-            color: #d2d3d8; padding: 0.4rem 0.9rem;
-            font-family: 'Satoshi', sans-serif; font-size: 0.8rem;
-            cursor: pointer; border-radius: 4px;
+            color: #d2d3d8;
+            padding: 0.4rem 0.9rem;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
             transition: all 0.2s ease;
         }
+
         .filter-btn:hover {
             border-color: rgba(152, 232, 193, 0.28);
             color: #f8f8f2;
         }
+
         .filter-btn.active {
             background: rgba(152, 232, 193, 0.12);
             border-color: rgba(152, 232, 193, 0.4);
@@ -477,7 +807,8 @@
         }
 
         .token-count-label {
-            font-size: 0.75rem; color: rgba(207, 255, 207, 0.45);
+            font-size: 0.75rem;
+            color: rgba(207, 255, 207, 0.45);
         }
 
         /* ─── Token Grid ─── */
@@ -491,63 +822,91 @@
         .token-card {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(152, 232, 193, 0.1);
-            border-radius: 8px; overflow: hidden;
+            border-radius: 8px;
+            overflow: hidden;
             transition: all 0.2s ease;
         }
+
         .token-card:hover {
             border-color: rgba(152, 232, 193, 0.3);
             box-shadow: 0 0 20px rgba(152, 232, 193, 0.05);
         }
+
         .token-card.owned {
             border-color: rgba(152, 232, 193, 0.25);
         }
+
         .token-card.owned::after {
             content: "Owned";
             position: absolute;
-            top: 0.4rem; right: 0.4rem;
+            top: 0.4rem;
+            right: 0.4rem;
             font-size: 0.6rem;
             background: rgba(152, 232, 193, 0.18);
             border: 1px solid rgba(152, 232, 193, 0.35);
-            color: #98e8c1; padding: 0.1rem 0.35rem;
-            border-radius: 2px; text-transform: uppercase;
+            color: #98e8c1;
+            padding: 0.1rem 0.35rem;
+            border-radius: 2px;
+            text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-        .token-card { position: relative; }
+
+        .token-card {
+            position: relative;
+        }
 
         .token-svg-wrap {
-            aspect-ratio: 1; overflow: hidden;
+            aspect-ratio: 1;
+            overflow: hidden;
             background: #050508;
         }
-        .token-svg-wrap svg { width: 100%; height: 100%; display: block; }
+
+        .token-svg-wrap svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
         .token-info {
             padding: 0.6rem 0.75rem;
-            display: flex; flex-direction: column; gap: 0.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
         }
 
         .token-collection-name {
-            font-size: 0.6rem; color: rgba(207, 255, 207, 0.45);
-            text-transform: uppercase; letter-spacing: 0.08em;
+            font-size: 0.6rem;
+            color: rgba(207, 255, 207, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .token-id {
-            font-size: 0.9rem; color: #f8f8f2; font-weight: 500;
+            font-size: 0.9rem;
+            color: #f8f8f2;
+            font-weight: 500;
         }
 
         /* Load more */
         .load-more-row {
-            width: 100%; display: flex;
-            justify-content: center; padding: 1.5rem 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 1.5rem 0;
         }
 
         .btn-load-more {
             background: rgba(152, 232, 193, 0.06);
             border: 1px solid rgba(152, 232, 193, 0.2);
-            color: #98e8c1; padding: 0.6rem 1.5rem;
-            font-family: 'Satoshi', sans-serif; font-size: 0.85rem;
-            cursor: pointer; border-radius: 5px;
+            color: #98e8c1;
+            padding: 0.6rem 1.5rem;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 5px;
             transition: all 0.2s ease;
         }
+
         .btn-load-more:hover {
             background: rgba(152, 232, 193, 0.12);
             border-color: rgba(152, 232, 193, 0.35);
@@ -555,61 +914,91 @@
 
         /* Empty state */
         .empty-state {
-            width: 100%; text-align: center;
-            padding: 3rem 1rem; color: #d2d3d8;
+            width: 100%;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #d2d3d8;
         }
-        .empty-state p { margin-bottom: 0.5rem; }
+
+        .empty-state p {
+            margin-bottom: 0.5rem;
+        }
 
         /* ─── My Collection Modal ─── */
         .modal {
-            position: fixed; inset: 0; z-index: 200;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-backdrop {
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
 
         .modal-content {
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
             background: rgba(10, 10, 15, 0.95);
             border: 1px solid rgba(152, 232, 193, 0.15);
             border-radius: 12px;
-            width: 90vw; max-width: 900px;
+            width: 90vw;
+            max-width: 900px;
             max-height: 85vh;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
         }
 
         .modal-header {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 1.2rem 1.5rem;
             border-bottom: 1px solid rgba(152, 232, 193, 0.1);
         }
 
         .modal-header h2 {
-            font-size: 1.2rem; font-weight: 500; color: #cfffcf;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #cfffcf;
         }
 
         .modal-close {
-            background: none; border: none;
-            color: #d2d3d8; font-size: 1.5rem;
-            cursor: pointer; padding: 0.25rem;
+            background: none;
+            border: none;
+            color: #d2d3d8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
             transition: color 0.2s ease;
         }
-        .modal-close:hover { color: #f8f8f2; }
+
+        .modal-close:hover {
+            color: #f8f8f2;
+        }
 
         .modal-body {
-            padding: 1.5rem; overflow-y: auto; flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
         }
 
         .modal-empty {
-            text-align: center; padding: 3rem 1rem; color: #d2d3d8;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #d2d3d8;
         }
-        .modal-empty p { margin-bottom: 0.5rem; }
+
+        .modal-empty p {
+            margin-bottom: 0.5rem;
+        }
 
         /* NFT grid in modal */
         .nft-grid {
@@ -621,44 +1010,65 @@
         .nft-card {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(152, 232, 193, 0.1);
-            border-radius: 8px; overflow: hidden;
+            border-radius: 8px;
+            overflow: hidden;
             transition: all 0.2s ease;
         }
+
         .nft-card:hover {
             border-color: rgba(152, 232, 193, 0.3);
             box-shadow: 0 0 20px rgba(152, 232, 193, 0.05);
         }
 
         .nft-svg-wrap {
-            aspect-ratio: 1; overflow: hidden;
+            aspect-ratio: 1;
+            overflow: hidden;
             background: #050508;
         }
-        .nft-svg-wrap svg { width: 100%; height: 100%; display: block; }
+
+        .nft-svg-wrap svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
         .nft-info {
-            padding: 0.75rem; display: flex;
-            flex-direction: column; gap: 0.25rem;
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
         .nft-collection-name {
-            font-size: 0.65rem; color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.08em;
+            font-size: 0.65rem;
+            color: rgba(207, 255, 207, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .nft-token-id {
-            font-size: 0.95rem; color: #f8f8f2; font-weight: 500;
+            font-size: 0.95rem;
+            color: #f8f8f2;
+            font-weight: 500;
         }
 
         /* ─── Toasts ─── */
         .toast-container {
-            position: fixed; bottom: 1.5rem; right: 1.5rem;
-            z-index: 300; display: flex; flex-direction: column;
-            gap: 0.5rem; max-width: 360px;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 360px;
         }
 
         .toast {
-            padding: 0.8rem 1.2rem; border-radius: 6px;
-            font-size: 0.8rem; line-height: 1.4;
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            line-height: 1.4;
             backdrop-filter: blur(12px);
             animation: toast-in 0.3s ease forwards;
             border: 1px solid;
@@ -669,47 +1079,73 @@
             border-color: rgba(152, 232, 193, 0.3);
             color: #98e8c1;
         }
+
         .toast.error {
             background: rgba(254, 125, 125, 0.1);
             border-color: rgba(254, 125, 125, 0.3);
             color: #fe7d7d;
         }
+
         .toast.info {
             background: rgba(189, 147, 249, 0.1);
             border-color: rgba(189, 147, 249, 0.3);
             color: #bd93f9;
         }
 
-        .toast.removing { animation: toast-out 0.3s ease forwards; }
+        .toast.removing {
+            animation: toast-out 0.3s ease forwards;
+        }
 
         @keyframes toast-in {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
+
         @keyframes toast-out {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(20px); }
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+            }
         }
 
         /* ─── Tx Result Modal ─── */
         .tx-modal {
-            position: fixed; inset: 0; z-index: 250;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed;
+            inset: 0;
+            z-index: 250;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .tx-modal-backdrop {
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
 
         .tx-modal-card {
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
             background: rgba(10, 10, 15, 0.95);
             border: 1px solid rgba(152, 232, 193, 0.15);
             border-radius: 12px;
-            width: 90vw; max-width: 480px;
+            width: 90vw;
+            max-width: 480px;
             padding: 2rem;
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
             text-align: center;
@@ -717,85 +1153,144 @@
         }
 
         @keyframes tx-modal-in {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
-        .tx-modal-card.success { border-color: rgba(152, 232, 193, 0.3); }
-        .tx-modal-card.error { border-color: rgba(254, 125, 125, 0.3); }
+        .tx-modal-card.success {
+            border-color: rgba(152, 232, 193, 0.3);
+        }
 
-        .tx-modal-icon { font-size: 3rem; margin-bottom: 0.75rem; line-height: 1; }
+        .tx-modal-card.error {
+            border-color: rgba(254, 125, 125, 0.3);
+        }
 
-        .tx-modal-title { font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; }
-        .tx-modal-card.success .tx-modal-title { color: #98e8c1; }
-        .tx-modal-card.error .tx-modal-title { color: #fe7d7d; }
+        .tx-modal-icon {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+            line-height: 1;
+        }
+
+        .tx-modal-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .tx-modal-card.success .tx-modal-title {
+            color: #98e8c1;
+        }
+
+        .tx-modal-card.error .tx-modal-title {
+            color: #fe7d7d;
+        }
 
         .tx-modal-message {
-            font-size: 0.85rem; color: #d2d3d8;
-            line-height: 1.5; margin-bottom: 1.2rem;
+            font-size: 0.85rem;
+            color: #d2d3d8;
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
         }
 
         .tx-modal-hash-label {
-            font-size: 0.65rem; color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.65rem;
+            color: rgba(207, 255, 207, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 0.3rem;
         }
 
         .tx-modal-hash-box {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(152, 232, 193, 0.1);
-            border-radius: 6px; padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
             margin-bottom: 1rem;
-            display: flex; align-items: center;
-            gap: 0.5rem; justify-content: center;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
         }
 
         .tx-modal-hash {
             font-family: 'Courier New', monospace;
-            font-size: 0.7rem; color: #98e8c1;
-            word-break: break-all; text-align: left; flex: 1;
+            font-size: 0.7rem;
+            color: #98e8c1;
+            word-break: break-all;
+            text-align: left;
+            flex: 1;
         }
 
         .tx-modal-copy {
-            background: none; border: none;
-            color: rgba(152, 232, 193, 0.6); cursor: pointer;
-            font-size: 0.75rem; padding: 0.2rem 0.4rem;
-            border-radius: 3px; transition: all 0.2s ease;
-            white-space: nowrap; flex-shrink: 0;
+            background: none;
+            border: none;
+            color: rgba(152, 232, 193, 0.6);
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
-        .tx-modal-copy:hover { color: #98e8c1; background: rgba(152, 232, 193, 0.1); }
+
+        .tx-modal-copy:hover {
+            color: #98e8c1;
+            background: rgba(152, 232, 193, 0.1);
+        }
 
         .tx-modal-error-detail {
             background: rgba(254, 125, 125, 0.06);
             border: 1px solid rgba(254, 125, 125, 0.15);
-            border-radius: 6px; padding: 0.6rem 0.8rem;
-            margin-bottom: 1rem; text-align: left;
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 1rem;
+            text-align: left;
         }
 
         .tx-modal-error-label {
-            font-size: 0.65rem; color: rgba(254, 125, 125, 0.6);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.65rem;
+            color: rgba(254, 125, 125, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 0.3rem;
         }
 
         .tx-modal-error-text {
             font-family: 'Courier New', monospace;
-            font-size: 0.7rem; color: #fe7d7d;
-            word-break: break-all; line-height: 1.4;
-            max-height: 120px; overflow-y: auto;
+            font-size: 0.7rem;
+            color: #fe7d7d;
+            word-break: break-all;
+            line-height: 1.4;
+            max-height: 120px;
+            overflow-y: auto;
         }
 
         .tx-modal-actions {
-            display: flex; gap: 0.75rem;
-            justify-content: center; flex-wrap: wrap;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .tx-modal-btn {
-            padding: 0.6rem 1.2rem; border-radius: 6px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
             font-family: 'Satoshi', sans-serif;
-            font-size: 0.85rem; cursor: pointer;
-            transition: all 0.2s ease; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
         .tx-modal-btn-primary {
@@ -803,10 +1298,12 @@
             border: 1px solid rgba(152, 232, 193, 0.35);
             color: #98e8c1;
         }
+
         .tx-modal-btn-primary:hover {
             background: rgba(152, 232, 193, 0.2);
             border-color: rgba(152, 232, 193, 0.5);
-            color: #cfffcf; opacity: 1;
+            color: #cfffcf;
+            opacity: 1;
         }
 
         .tx-modal-btn-secondary {
@@ -814,10 +1311,12 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: #d2d3d8;
         }
+
         .tx-modal-btn-secondary:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.2);
-            color: #f8f8f2; opacity: 1;
+            color: #f8f8f2;
+            opacity: 1;
         }
 
         .tx-modal-btn-error {
@@ -825,6 +1324,7 @@
             border: 1px solid rgba(254, 125, 125, 0.3);
             color: #fe7d7d;
         }
+
         .tx-modal-btn-error:hover {
             background: rgba(254, 125, 125, 0.18);
             border-color: rgba(254, 125, 125, 0.45);
@@ -833,67 +1333,273 @@
 
         /* Confetti */
         #confetti-canvas {
-            position: fixed; inset: 0;
-            z-index: 400; pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 400;
+            pointer-events: none;
+        }
+
+        .view {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .view.active {
+            display: flex;
         }
 
         /* ─── Responsive ─── */
         @media (max-width: 900px) {
-            .collection-grid { grid-template-columns: repeat(2, 1fr); }
-            .col-detail-header { flex-direction: column; gap: 1.2rem; }
-            .col-detail-preview { width: 100%; height: 300px; }
-            .col-detail-preview svg { height: 100%; width: auto; margin: auto; }
+            .collection-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .col-detail-header {
+                flex-direction: column;
+                gap: 1.2rem;
+            }
+
+            .col-detail-preview {
+                width: 100%;
+                height: 300px;
+            }
+
+            .col-detail-preview svg {
+                height: 100%;
+                width: auto;
+                margin: auto;
+            }
         }
 
         @media (max-width: 768px) {
-            .page-title { font-size: 1.6rem; }
-            .page-subtitle { font-size: 0.7rem; }
-            .header { padding: 0.5rem 1rem; }
-            .header-nav { gap: 1rem; }
-            .nav-link { font-size: 0.75rem; }
-            .main { padding: 5rem 1rem 2rem; }
-            .mint-panel { flex-wrap: wrap; gap: 1rem; }
-            .btn-mint { margin-left: 0; width: 100%; }
-            .token-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.7rem;
+            }
+
+            .header {
+                padding: 0.5rem 1rem;
+            }
+
+            .header-nav {
+                gap: 1rem;
+            }
+
+            .nav-link {
+                font-size: 0.75rem;
+            }
+
+            .main {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .mint-panel {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .btn-mint {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .token-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
         }
 
         @media (max-width: 600px) {
-            .collection-grid { grid-template-columns: 1fr; }
+            .collection-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
-            .header-actions { gap: 0.4rem; }
-            .btn-wallet, .btn-collection { font-size: 0.7rem; padding: 0.4rem 0.6rem; }
-            .col-detail-name { font-size: 1.4rem; }
+            .header-actions {
+                gap: 0.4rem;
+            }
+
+            .btn-wallet,
+            .btn-collection {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .col-detail-name {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <canvas id="glow-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;"></canvas>
+    <canvas id="main-canvas"
+        style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;"></canvas>
+    <main class="main">
+        <script src="/lib/faucet.js"></script>
+        <script src="/lib/fab.js"></script>
 
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+            <h1 class="page-title" style="margin-bottom:0;">CW-SVG</h1>
+            <button class="btn-docs" onclick="openDocModal()" aria-label="Documentation"
+                title="Documentation">?</button>
+        </div>
+        <div class="page-subtitle">Generative On-Chain Art</div>
+
+        <!-- ── Documentation Modal ── -->
+        <div id="modal-docs"
+            style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;">
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);"
+                onclick="closeDocModal()"></div>
+            <div
+                style="position:relative;z-index:1;background:rgba(10,10,15,0.95);border:1px solid rgba(152,232,193,0.15);border-radius:12px;width:90vw;max-width:580px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 0 60px rgba(0,0,0,0.5);">
+                <div
+                    style="display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.5rem;border-bottom:1px solid rgba(152,232,193,0.1);">
+                    <h2 style="font-size:1.1rem;font-weight:500;color:#cfffcf;">Documentation</h2>
+                    <button onclick="closeDocModal()"
+                        style="background:none;border:1px solid rgba(152,232,193,0.12);color:#d2d3d8;width:32px;height:32px;border-radius:4px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;">×</button>
+                </div>
+                <div style="padding:1.5rem;overflow-y:auto;flex:1;">
+
+                    <!-- CWSVG Section -->
+                    <div style="margin-bottom:1.75rem;">
+                        <h3
+                            style="font-size:0.9rem;font-weight:500;color:#98e8c1;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em;">
+                            What are cwSVGs?</h3>
+                        <p style="font-size:0.85rem;color:#d2d3d8;line-height:1.65;margin-bottom:0.75rem;">
+                            cwSVGs are on-chain SVGs with parameterized variables. Rather than storing a static image,
+                            the contract holds an SVG template with variable slots — colors, shapes, patterns, positions
+                            — that are generated on-chain during minting.
+                        </p>
+                        <p style="font-size:0.85rem;color:#d2d3d8;line-height:1.65;margin-bottom:0.75rem;">
+                            Each token receives a unique combination of these variables, derived from on-chain entropy
+                            at the time of mint. The result: every token renders a one-of-a-kind SVG, fully client-side,
+                            with no off-chain metadata or IPFS dependency.
+                        </p>
+                        <p style="font-size:0.85rem;color:#d2d3d8;line-height:1.65;">
+                            Because the SVG template and all parameters live on-chain, the art is permanent and
+                            self-verifying. Any client can reconstruct the exact visual from the contract state alone.
+                        </p>
+                    </div>
+
+                    <!-- Shitstraps Section -->
+                    <div style="margin-bottom:1.75rem;">
+                        <h3
+                            style="font-size:0.9rem;font-weight:500;color:#98e8c1;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em;">
+                            Payment via Shitstraps</h3>
+                        <p style="font-size:0.85rem;color:#d2d3d8;line-height:1.65;margin-bottom:0.75rem;">
+                            Collections may price mints in a specific denom (e.g. <code
+                                style="font-family:'Courier New',monospace;font-size:0.8rem;background:rgba(152,232,193,0.06);border:1px solid rgba(152,232,193,0.15);border-radius:3px;padding:0.1rem 0.4rem;color:#98e8c1;">uterp</code>).
+                            If your wallet holds a different asset, the mint flow can use a <strong
+                                style="color:#bd93f9;">shitstrap</strong> — an automated swap path that converts your
+                            available tokens into the required denom at mint time.
+                        </p>
+                        <p style="font-size:0.85rem;color:#d2d3d8;line-height:1.65;margin-bottom:0.75rem;">
+                            When you connect your wallet, the payment section shows all available options:
+                        </p>
+                        <ul style="list-style:none;padding:0;">
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">→</span>
+                                Direct payment if you already hold the required denom
+                            </li>
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">→</span>
+                                Shitstrap swap paths from other assets you hold
+                            </li>
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">→</span>
+                                Insufficient balance warnings if no path covers the cost
+                            </li>
+                        </ul>
+                        <p style="font-size:0.85rem;color:#d2d3d8;line-height:1.65;margin-top:0.75rem;">
+                            The swap is executed as part of the mint transaction — you don't need to manually swap
+                            beforehand. Select your preferred payment method and confirm.
+                        </p>
+                    </div>
+
+                    <!-- Minting Process -->
+                    <div>
+                        <h3
+                            style="font-size:0.9rem;font-weight:500;color:#98e8c1;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em;">
+                            Minting Process</h3>
+                        <ul style="list-style:none;padding:0;">
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">1.</span>
+                                Browse collections and select one
+                            </li>
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">2.</span>
+                                Set your quantity and review the total cost
+                            </li>
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">3.</span>
+                                Choose a payment method (direct or shitstrap)
+                            </li>
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">4.</span>
+                                Confirm the transaction preview and sign
+                            </li>
+                            <li
+                                style="font-size:0.85rem;color:#d2d3d8;line-height:1.6;padding:0.25rem 0 0.25rem 1.2rem;position:relative;">
+                                <span
+                                    style="position:absolute;left:0;color:rgba(152,232,193,0.4);font-size:0.75rem;">5.</span>
+                                Your unique SVG is generated on-chain — refresh to see it
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         <!-- ── List View ── -->
         <div id="view-list" style="width:100%;">
 
-        <!-- ── Loading Spinner ── -->
-        <div id="loading" style="display:flex;justify-content:center;align-items:center;padding:4rem 1rem;">
-            <div style="width:32px;height:32px;border:3px solid rgba(152,232,193,0.2);border-top-color:#98e8c1;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-            <span style="margin-left:1rem;color:#98e8c1;font-family:Satoshi,sans-serif;font-size:0.9rem;">Loading collections...</span>
-        </div>
-        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+            <!-- ── Loading Spinner ── -->
+            <div id="loading" style="display:flex;justify-content:center;align-items:center;padding:4rem 1rem;">
+                <div
+                    style="width:32px;height:32px;border:3px solid rgba(152,232,193,0.2);border-top-color:#98e8c1;border-radius:50%;animation:spin 0.8s linear infinite;">
+                </div>
+                <span style="margin-left:1rem;color:#98e8c1;font-family:Satoshi,sans-serif;font-size:0.9rem;">Loading
+                    collections...</span>
+            </div>
+            <style>
+                @keyframes spin {
+                    to {
+                        transform: rotate(360deg)
+                    }
+                }
+            </style>
 
-        <!-- ── Demo Mode Notice ── -->
-        <div id="demo-notice" style="display:none;background:rgba(255,184,108,0.1);border:1px solid rgba(255,184,108,0.3);color:#ffb86c;padding:0.75rem 1rem;border-radius:8px;margin:1rem 0;font-family:Satoshi,sans-serif;font-size:0.85rem;">
-            Demo mode — on-chain data unavailable. Showing sample collections.
-        </div>
+            <!-- ── Demo Mode Notice ── -->
+            <div id="demo-notice" class="demo-notice" style="display:none;"> Demo mode Showing sample collections.</div>
 
-        <!-- ── Collection Grid ── -->
-        <div id="collection-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;padding:1rem 0;"></div>
+            <!-- ── Collection Grid ── -->
+            <div id="collection-grid" class="collection-grid" style="display:none;"></div>
+
 
         </div><!-- end view-list -->
 
         <!-- ── Collection Detail View ── -->
-        <div id="view-collection" style="display:none; width:100%; flex-direction:column; align-items:flex-start;">
+        <div id="view-collection" class="view" style="align-items:flex-start;">
             <button class="btn-back" onclick="showListView()">&#8592; Back to Collections</button>
 
             <div class="col-detail-header" id="col-detail-header"></div>
@@ -926,7 +1632,8 @@
                     <div id="confirm-steps"></div>
                     <div class="confirm-actions">
                         <button class="btn-cancel-confirm" onclick="cancelMintConfirm()">Cancel</button>
-                        <button class="btn-confirm-mint" id="btn-confirm-mint" onclick="executeMintTx()">Confirm Mint</button>
+                        <button class="btn-confirm-mint" id="btn-confirm-mint" onclick="executeMintTx()">Confirm
+                            Mint</button>
                     </div>
                 </div>
             </div>
@@ -934,7 +1641,8 @@
             <div class="filter-row" id="filter-row" style="display:none">
                 <span class="token-count-label" id="token-count-label"></span>
                 <div class="filter-tabs">
-                    <button class="filter-btn active" id="filter-all" onclick="setTokenFilter('all')">All Tokens</button>
+                    <button class="filter-btn active" id="filter-all" onclick="setTokenFilter('all')">All
+                        Tokens</button>
                     <button class="filter-btn" id="filter-mine" onclick="setTokenFilter('mine')" style="display:none">
                         My Tokens (<span id="my-token-count">0</span>)
                     </button>
@@ -983,6 +1691,17 @@
     }
     </script>
 
+    <!-- ── Add to your <script> block (or as window-scoped) ── -->
+    <script>
+        window.openDocModal = function () {
+            document.getElementById('modal-docs').style.display = 'flex';
+        };
+        window.closeDocModal = function () {
+            document.getElementById('modal-docs').style.display = 'none';
+        };
+    </script>
+
+
     <script type="module">
         import { loadSiteConfig } from '/lib/config-loader.js';
         import { applyNavGuard } from '/lib/nav-guard.js';
@@ -1009,7 +1728,7 @@
         };
 
         // Async config overlay — merge from config-loader (on-chain + static)
-        loadSiteConfig(CONFIG).catch(() => {});
+        loadSiteConfig(CONFIG).catch(() => { });
 
         const CHAIN_SUGGEST = {
             chainId: CONFIG.chainId,
@@ -1220,7 +1939,7 @@
                     state.shitstrapCache = cached.data;
                     return;
                 }
-            } catch (_) {}
+            } catch (_) { }
 
             try {
                 const adapter = createQueryAdapter(CONFIG.rpc);
@@ -1256,7 +1975,7 @@
                     localStorage.setItem(cacheKey, JSON.stringify({
                         ts: Date.now(), data: state.shitstrapCache,
                     }));
-                } catch (_) {}
+                } catch (_) { }
             } catch (err) {
                 console.warn("Failed to load shistraps:", err);
                 state.shitstrapCache = [];
@@ -2028,8 +2747,8 @@
             let prev = 0;
             const rows = tiers.map((tier, i) => {
                 const cls = tier === currentTier ? "current"
-                          : minted >= tier.until_count ? "ended"
-                          : "future";
+                    : minted >= tier.until_count ? "ended"
+                        : "future";
                 const isLast = i === tiers.length - 1;
                 const range = isLast && cls !== "ended"
                     ? `${prev + 1}+`
@@ -2531,14 +3250,14 @@
 
         const PALETTES = {
             purple: { primary: "#bd93f9", secondary: "#6c5ce7", glow: "#a29bfe", bg: "#1a0a2e", particle: "#d4b8ff", ring: "#9b7de8" },
-            teal:   { primary: "#98e8c1", secondary: "#55efc4", glow: "#00b894", bg: "#0a1a15", particle: "#b8f5d8", ring: "#6ce8a8" },
-            gold:   { primary: "#ffeaa7", secondary: "#fdcb6e", glow: "#f9ca24", bg: "#1a1500", particle: "#fff3c4", ring: "#f0d56e" },
+            teal: { primary: "#98e8c1", secondary: "#55efc4", glow: "#00b894", bg: "#0a1a15", particle: "#b8f5d8", ring: "#6ce8a8" },
+            gold: { primary: "#ffeaa7", secondary: "#fdcb6e", glow: "#f9ca24", bg: "#1a1500", particle: "#fff3c4", ring: "#f0d56e" },
         };
 
         const GLYPH_SETS = {
             ancient: ["✧", "✦", "◇", "⊕", "⊗", "⟡", "⟐", "◈", "⊛", "✵"],
-            runes:   ["ᚠ", "ᚢ", "ᚦ", "ᚨ", "ᚱ", "ᚲ", "ᚷ", "ᚹ", "ᚺ", "ᚾ"],
-            carbon:  ["⬡", "⬢", "⬣", "◯", "⏣", "⎔", "⏢", "⎊", "⊡", "⊞"],
+            runes: ["ᚠ", "ᚢ", "ᚦ", "ᚨ", "ᚱ", "ᚲ", "ᚷ", "ᚹ", "ᚺ", "ᚾ"],
+            carbon: ["⬡", "⬢", "⬣", "◯", "⏣", "⎔", "⏢", "⎊", "⊡", "⊞"],
         };
 
         function mulberry32(seed) {
@@ -2568,11 +3287,11 @@
 
             return {
                 background_style: extension.background_style || rngNames[seed % 3],
-                core_color:       extension.core_color || colorNames[(seed >> 2) % 3],
-                ring_count:       parseInt(extension.ring_count) || (3 + (seed % 6)),
+                core_color: extension.core_color || colorNames[(seed >> 2) % 3],
+                ring_count: parseInt(extension.ring_count) || (3 + (seed % 6)),
                 particle_density: parseFloat(extension.particle_density) || (0.3 + (seed % 7) * 0.1),
-                glyph_set:        extension.glyph_set || glyphNames[(seed >> 4) % 3],
-                seed:             parseInt(extension.seed) || seed,
+                glyph_set: extension.glyph_set || glyphNames[(seed >> 4) % 3],
+                seed: parseInt(extension.seed) || seed,
             };
         }
 
@@ -2893,7 +3612,7 @@
         // ═══════════════════════════════════════════════════════════════
 
         (function initBackground() {
-            const canvas = document.getElementById("glow-canvas");
+            const canvas = document.getElementById("main-canvas");
             if (!canvas) return;
             const ctx = canvas.getContext("2d");
             let width, height, centerX, centerY, time = 0;
@@ -3010,27 +3729,6 @@
             buildCollectionGrid(DEMO_COLLECTIONS);
         });
     </script>
-
-<div id="fab-wallet-stack" style="position:fixed;bottom:6rem;right:1.5rem;z-index:9998;display:flex;flex-direction:column;gap:0.5rem;align-items:center;">
-<button id="faucet-btn" style="display:none;width:40px;height:40px;border-radius:50%;border:none;background:#ffb86c;color:#000;cursor:pointer;font-size:14px;font-weight:500;box-shadow:0 4px 15px rgba(255,184,108,0.3);align-items:center;justify-content:center;" aria-label="Faucet" title="Faucet">F</button>
-<button id="btn-wallet" style="width:40px;height:40px;border-radius:50%;border:none;background:rgba(152,232,193,0.15);border:1px solid rgba(152,232,193,0.4);color:#98e8c1;cursor:pointer;font-size:16px;font-weight:400;box-shadow:0 4px 15px rgba(152,232,193,0.15);display:flex;align-items:center;justify-content:center;" aria-label="Connect Wallet" title="Connect Wallet">W</button>
-</div>
-<div id="fab-nav" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;">
-<div id="fab-menu" style="position:absolute;bottom:58px;right:0;display:none;flex-direction:column;gap:2px;padding:0.5rem;background:rgba(10,10,15,0.95);border:1px solid rgba(152,232,193,0.2);border-radius:12px;min-width:150px;box-shadow:0 8px 40px rgba(0,0,0,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
-<div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(152,232,193,0.4);padding:0.25rem 0.75rem 0.1rem;font-family:Satoshi,sans-serif;">Navigate</div>
-<a href="/svg" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#98e8c1;background:rgba(152,232,193,0.08);font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">SVG</a>
-<a href="/tabs" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Names</a>
-<a href="/ibc" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">IBC</a>
-<a href="/brain" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Brain</a>
-<div style="height:1px;background:rgba(152,232,193,0.1);margin:0.15rem 0.5rem;"></div>
-<a href="/no-rick" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">No Rick</a>
-<a href="/passkey" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Passkey</a>
-<a href="/tx" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Tx Builder</a>
-<a href="/admin" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Admin</a>
-</div>
-<button onclick="var m=document.getElementById('fab-menu');var o=m.style.display==='flex';m.style.display=o?'none':'flex';" style="width:48px;height:48px;border-radius:50%;border:none;background:#98e8c1;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;box-shadow:0 4px 20px rgba(152,232,193,0.3);" aria-label="Menu">+</button>
-</div>
-<script>document.addEventListener("click",function(e){var f=document.getElementById("fab-nav");if(f&&!f.contains(e.target))document.getElementById("fab-menu").style.display="none"});</script>
 </body>
 
 </html>

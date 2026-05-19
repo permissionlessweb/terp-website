@@ -12,9 +12,9 @@ set -oe errexit
 ENABLE_FAUCET=${1:-"true"}
 custom_script_path=${POST_INIT_SCRIPT:-"/root/post_init.sh"}
 
-file=~/.terp/config/genesis.json
+file=~/.terpd/config/genesis.json
 if [ ! -e "$file" ]; then
-  rm -rf ~/.terp/*
+  rm -rf ~/.terpd/*
 
   chain_id=${CHAINID:-120u-1}
   LOG_LEVEL=${LOG_LEVEL:-INFO}
@@ -36,11 +36,11 @@ if [ ! -e "$file" ]; then
     .app_state.mint.params.mint_denom = "uterp" |
     .app_state.staking.params.bond_denom = "uterp" |
     .app_state.tokenfactory.params.denom_creation_fee = [{"denom":"uterp","amount":"1000000"}]
-  ' ~/.terp/config/genesis.json >~/.terp/config/genesis.json.tmp && mv ~/.terp/config/genesis.json{.tmp,}
+  ' ~/.terpd/config/genesis.json >~/.terpd/config/genesis.json.tmp && mv ~/.terpd/config/genesis.json{.tmp,}
 
   # Fast blocks for local testing (200ms rounds)
   if [ "${fast_blocks}" = "true" ]; then
-    sed -E -i '/timeout_(propose|prevote|precommit|commit)/s/[0-9]+m?s/200ms/' ~/.terp/config/config.toml
+    sed -E -i '/timeout_(propose|prevote|precommit|commit)/s/[0-9]+m?s/200ms/' ~/.terpd/config/config.toml
   fi
 
   # Run custom post-init script if mounted
@@ -81,17 +81,17 @@ if [ ! -e "$file" ]; then
 
   # ─── Node config ───────────────────────────────────────────────
   # LCD / REST API
-  perl -i -pe 's/localhost/0.0.0.0/' ~/.terp/config/app.toml
-  perl -i -pe 's;address = "tcp://0.0.0.0:1317";address = "tcp://0.0.0.0:1316";' ~/.terp/config/app.toml
-  perl -i -pe 's/enable-unsafe-cors = false/enable-unsafe-cors = true/' ~/.terp/config/app.toml
-  perl -i -pe 's/concurrency = false/concurrency = true/' ~/.terp/config/app.toml
+  perl -i -pe 's/localhost/0.0.0.0/' ~/.terpd/config/app.toml
+  perl -i -pe 's;address = "tcp://0.0.0.0:1317";address = "tcp://0.0.0.0:1316";' ~/.terpd/config/app.toml
+  perl -i -pe 's/enable-unsafe-cors = false/enable-unsafe-cors = true/' ~/.terpd/config/app.toml
+  perl -i -pe 's/concurrency = false/concurrency = true/' ~/.terpd/config/app.toml
 
   # gRPC — ensure enabled on 0.0.0.0:9090
-  perl -i -pe 's/^(address = ")(0\.0\.0\.0:9090)(")/$1$2$3/' ~/.terp/config/app.toml
+  perl -i -pe 's/^(address = ")(0\.0\.0\.0:9090)(")/$1$2$3/' ~/.terpd/config/app.toml
 
   # Connection limits
-  perl -i -pe 's/max_subscription_clients.+/max_subscription_clients = 100/' ~/.terp/config/config.toml
-  perl -i -pe 's/max_subscriptions_per_client.+/max_subscriptions_per_client = 50/' ~/.terp/config/config.toml
+  perl -i -pe 's/max_subscription_clients.+/max_subscription_clients = 100/' ~/.terpd/config/config.toml
+  perl -i -pe 's/max_subscriptions_per_client.+/max_subscriptions_per_client = 50/' ~/.terpd/config/config.toml
 fi
 
 # ─── Start services ────────────────────────────────────────────

@@ -65,7 +65,7 @@ fn base_chain_config(chain_id: &str) -> ChainConfig {
 
     // Override image to local-zk
     cfg.images = vec![DockerImage {
-        repository: env_or("TERP_IMAGE_REPO", "terpnetwork/terp-core"),
+        repository: env_or("TERP_IMAGE_REPO", "ghcr.io/terpnetwork/terp-core"),
         version: env_or("`TERP_IMAGE_VERSION`", "v5.2.0-zk-localterp"),
         uid_gid: None,
     }];

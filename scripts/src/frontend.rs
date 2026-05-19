@@ -79,21 +79,12 @@ pub fn patch_config(
     Ok(())
 }
 
-/// TODO: gives path of unified config to terp-docs Next.js app.
-fn write_docs_env(addresses: &HashMap<String, String>) -> anyhow::Result<()> {
-    let docs = docs_root();
-    if !docs.exists() {
-        return Ok(());
-    }
-
-    Ok(())
-}
 
 /// Start the website dev server (serve.py) on port 3000.
 ///
 /// Sets `CHAIN_RPC` env var so the RPC proxy points to the actual chain RPC port.
 pub fn start_website_server(chain_rpc_url: &str) -> anyhow::Result<Child> {
-    let serve_py = website_root().join("scripts/py/serve.py");
+    let serve_py = website_root().join("scripts/serve.py");
     println!("Starting website dev server on http://localhost:3000");
     println!("  RPC proxy -> {}", chain_rpc_url);
 
@@ -134,6 +125,17 @@ pub fn start_docs_server(addresses: &HashMap<String, String>) -> anyhow::Result<
 
     Ok(Some(child))
 }
+
+/// TODO: gives path of unified config to terp-docs Next.js app.
+fn write_docs_env(addresses: &HashMap<String, String>) -> anyhow::Result<()> {
+    let docs = docs_root();
+    if !docs.exists() {
+        return Ok(());
+    }
+
+    Ok(())
+}
+
 
 /// Extract port number from a URL like "http://localhost:55004".
 fn extract_port(url: &str) -> Option<u16> {

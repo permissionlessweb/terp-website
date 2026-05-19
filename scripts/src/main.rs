@@ -14,7 +14,10 @@ use scripts::suite::TerpNetworkSuite;
 use scripts::{LOCAL_TERP, MOROCCO_1};
 
 #[derive(Parser)]
-#[command(name = "terp-scripts", about = "Unified deploy/test suite for terp.network")]
+#[command(
+    name = "terp-scripts",
+    about = "Unified deploy/test suite for terp.network"
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -121,7 +124,10 @@ async fn main() -> Result<()> {
             if missing.is_empty() {
                 println!("All WASM modules ready.");
             } else {
-                eprintln!("{} module(s) still missing after build attempt:", missing.len());
+                eprintln!(
+                    "{} module(s) still missing after build attempt:",
+                    missing.len()
+                );
                 for m in &missing {
                     eprintln!("  - {}", m);
                 }
@@ -156,7 +162,10 @@ async fn deploy(
         for p in &missing {
             eprintln!("  - {}", p);
         }
-        return Err(anyhow!("Preflight check failed: {} file(s) missing", missing.len()));
+        return Err(anyhow!(
+            "Preflight check failed: {} file(s) missing",
+            missing.len()
+        ));
     }
 
     // Optionally spawn chain(s) via ict-rs
@@ -182,7 +191,9 @@ async fn deploy(
         "local" => {
             let (chain_id, grpc) = match &spawned {
                 Some(Spawned::Single(ref s)) => (s.chain_id.clone(), s.grpc_url.clone()),
-                Some(Spawned::Dual(ref d)) => (d.chain_a.chain_id.clone(), d.chain_a.grpc_url.clone()),
+                Some(Spawned::Dual(ref d)) => {
+                    (d.chain_a.chain_id.clone(), d.chain_a.grpc_url.clone())
+                }
                 None => ("120u-1".into(), "http://localhost:9090".into()),
             };
             ChainInfoOwned {
@@ -203,42 +214,55 @@ async fn deploy(
     // Run cw-orch on a blocking thread — DaemonBuilder::build() calls block_on()
     // internally, which panics if called from within a tokio runtime.
     let rt_handle = tokio::runtime::Handle::current();
-    let addresses: HashMap<String, String> = tokio::task::spawn_blocking(move || -> Result<HashMap<String, String>> {
-        let mut builder = DaemonBuilder::new(chain_info);
-        builder.handle(&rt_handle);
-        if let Some(ref m) = deployer_mnemonic {
-            builder.mnemonic(m);
-        }
-        let chain = builder.build()?;
+    let addresses: HashMap<String, String> =
+        tokio::task::spawn_blocking(move || -> Result<HashMap<String, String>> {
+            let mut builder = DaemonBuilder::new(chain_info);
+            builder.handle(&rt_handle);
+            if let Some(ref m) = deployer_mnemonic {
+                builder.mnemonic(m);
+            }
+            let chain = builder.build()?;
 
-        let sender = chain.sender_addr();
-        println!("Deploying as: {}", sender);
+            let sender = chain.sender_addr();
+            println!("Deploying as: {}", sender);
 
-        let data = if full {
-            TerpNetworkDeployData::full(sender)?
-        } else {
-            TerpNetworkDeployData::local_default(sender)?
-        };
+            let data = if full {
+                TerpNetworkDeployData::full(sender, &[])?
+            } else {
+                TerpNetworkDeployData::local_default(sender, &[])?
+            };
 
-        let suite = TerpNetworkSuite::deploy_on(chain, data)?;
+            let suite = TerpNetworkSuite::deploy_on(chain, data)?;
 
-        println!("\n--- Deployed Contracts ---");
-        let addrs = suite.collect_addresses();
-        suite.print_addresses();
-        Ok(addrs)
-    })
-    .await??;
+            println!("\n--- Deployed Contracts ---");
+            let addrs = suite.collect_addresses();
+            suite.print_addresses();
+            Ok(addrs)
+        })
+        .await??;
 
     // Resolve RPC URL for the proxy (serve.py needs the actual chain RPC)
     let (chain_id, rpc_url, grpc_url) = match &spawned {
         Some(Spawned::Single(ref s)) => (s.chain_id.clone(), s.rpc_url.clone(), s.grpc_url.clone()),
-        Some(Spawned::Dual(ref d)) => (d.chain_a.chain_id.clone(), d.chain_a.rpc_url.clone(), d.chain_a.grpc_url.clone()),
-        None => ("120u-1".into(), "http://localhost:26657".into(), "http://localhost:9090".into()),
+        Some(Spawned::Dual(ref d)) => (
+            d.chain_a.chain_id.clone(),
+            d.chain_a.rpc_url.clone(),
+            d.chain_a.grpc_url.clone(),
+        ),
+        None => (
+            "120u-1".into(),
+            "http://localhost:26657".into(),
+            "http://localhost:9090".into(),
+        ),
     };
 
     // Patch public/config.json with deployed addresses and endpoints
     frontend::patch_config(
-        &ChainEndpointConfig { chain_id, rpc_url: rpc_url.clone(), grpc_url },
+        &ChainEndpointConfig {
+            chain_id,
+            rpc_url: rpc_url.clone(),
+            grpc_url,
+        },
         &addresses,
     )?;
 
@@ -254,7 +278,10 @@ async fn deploy(
     println!("\n--- WASM Modules ---");
     let wasm_missing = scripts::wasm_build::preflight();
     if !wasm_missing.is_empty() {
-        eprintln!("WARN: {} WASM module(s) missing — some pages will have degraded functionality", wasm_missing.len());
+        eprintln!(
+            "WARN: {} WASM module(s) missing — some pages will have degraded functionality",
+            wasm_missing.len()
+        );
     }
 
     // Start frontend dev servers

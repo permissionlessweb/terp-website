@@ -74,7 +74,7 @@ dependencies = [
  "abstract-macros",
  "abstract-sdk",
  "abstract-std",
- "anybuf",
+ "anybuf 1.0.0",
  "cosmwasm-std 3.0.3-dev",
  "cw-ownable",
  "cw-paginate",
@@ -1042,6 +1042,12 @@ dependencies = [
 
 [[package]]
 name = "anybuf"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ecb50559f19eb92f65279f9de03e4625ed0572e7564ef3de5253e13928c55266"
+
+[[package]]
+name = "anybuf"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7658b7ea4a6843aad293ca2d3b0ba4d200b9720b18a5db0cea478dace9a9716"
@@ -1597,6 +1603,29 @@ checksum = "32637268377fc7b10a8c6d51de3e7fba1ce5dd371a96e342b34e6078db558e7f"
 
 [[package]]
 name = "bindgen"
+version = "0.69.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "271383c67ccabffb7381723dea0672a673f292304fcb45c01cc648c7a8d58088"
+dependencies = [
+ "bitflags 2.11.0",
+ "cexpr",
+ "clang-sys",
+ "itertools 0.11.0",
+ "lazy_static",
+ "lazycell",
+ "log",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "regex",
+ "rustc-hash 1.1.0",
+ "shlex",
+ "syn 2.0.117",
+ "which",
+]
+
+[[package]]
+name = "bindgen"
 version = "0.70.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f49d8fed880d473ea71efb9bf597651e77201bdd4893efe54c9e5d65ae04ce6f"
@@ -1925,6 +1954,24 @@ checksum = "63044e1ae8e69f3b5a92c736ca6269b8d12fa7efe39bf34ddb06d102cf0e2cab"
 dependencies = [
  "memchr",
  "serde",
+]
+
+[[package]]
+name = "btsg-ft-factory"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-orch",
+ "cw-storage-plus",
+ "cw2",
+ "dao-interface",
+ "osmosis-std-derive",
+ "prost",
+ "prost-types",
+ "schemars 1.2.1",
+ "serde",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -2757,6 +2804,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-admin-factory"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "cw-asset"
 version = "4.0.0"
 dependencies = [
@@ -2800,6 +2859,52 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-denom"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw20",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-filter"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-jsonfilter",
+ "cw-ownable",
+ "cw-protobuf-registry",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "dao-interface",
+ "schemars 1.2.1",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-fund-distributor"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-paginate-storage",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-stake",
+ "dao-interface",
+ "dao-voting-cw20-staked",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "cw-headstash"
 version = "0.1.0"
 dependencies = [
@@ -2837,6 +2942,16 @@ dependencies = [
  "cw-ownable",
  "cw-storage-plus",
  "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-hooks"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
  "thiserror 1.0.69",
 ]
 
@@ -2904,12 +3019,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-jsonfilter"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "base64 0.22.1",
+ "prost-reflect",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "cw-no-rick"
+version = "0.2.0"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-orch",
+ "ff",
+ "lol_alloc",
+ "pasta_curves",
+ "prost",
+ "rand_core 0.6.4",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "cw-orch"
 version = "0.30.0"
 dependencies = [
  "anyhow",
  "cosmrs",
  "cosmwasm-std 3.0.3-dev",
+ "cw-orch-circuit-derive",
  "cw-orch-contract-derive",
  "cw-orch-core",
  "cw-orch-daemon",
@@ -2924,6 +3065,15 @@ dependencies = [
  "serde",
  "thiserror 1.0.69",
  "tokio",
+]
+
+[[package]]
+name = "cw-orch-circuit-derive"
+version = "0.21.1"
+dependencies = [
+ "convert_case 0.6.0",
+ "quote",
+ "syn 2.0.117",
 ]
 
 [[package]]
@@ -3071,6 +3221,61 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-paginate-storage"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "serde",
+]
+
+[[package]]
+name = "cw-payroll-factory"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-denom",
+ "cw-ownable",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw-vesting",
+ "cw2",
+ "cw20",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-protobuf-registry"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "base64 0.22.1",
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "dao-interface",
+ "prost",
+ "prost-reflect",
+ "prost-types",
+ "schemars 1.2.1",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-reply-helper"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-std 3.0.3-dev",
+ "cw-utils",
+]
+
+[[package]]
 name = "cw-schema"
 version = "3.0.3-dev"
 dependencies = [
@@ -3140,6 +3345,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-stake-tracker"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-wormhole",
+]
+
+[[package]]
 name = "cw-storage-macro"
 version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3187,6 +3401,53 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-token-swap"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-tokenfactory-issuer"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-tokenfactory-types",
+ "cw2",
+ "dao-interface",
+ "osmosis-std",
+ "prost",
+ "schemars 1.2.1",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw-tokenfactory-types"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "dao-interface",
+ "osmosis-std",
+ "osmosis-std-derive",
+ "prost",
+ "prost-types",
+ "schemars 1.2.1",
+ "serde",
+ "serde-cw-value",
+]
+
+[[package]]
 name = "cw-utils"
 version = "3.0.0"
 dependencies = [
@@ -3195,6 +3456,35 @@ dependencies = [
  "schemars 0.8.22",
  "serde",
  "thiserror 2.0.18",
+]
+
+[[package]]
+name = "cw-vesting"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-denom",
+ "cw-ownable",
+ "cw-stake-tracker",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw-wormhole",
+ "cw2",
+ "cw20",
+ "serde",
+ "thiserror 1.0.69",
+ "wynd-utils",
+]
+
+[[package]]
+name = "cw-wormhole"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "serde",
 ]
 
 [[package]]
@@ -3254,6 +3544,87 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw20-stake"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-hooks",
+ "cw-ownable",
+ "cw-paginate-storage",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "dao-hooks",
+ "dao-voting",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw20-stake-external-rewards"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "cw20-stake",
+ "dao-hooks",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw20-stake-reward-distributor"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "cw20-stake",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "cw4"
+version = "3.0.0"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "schemars 0.8.22",
+ "serde",
+]
+
+[[package]]
+name = "cw4-group"
+version = "3.0.0"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw4",
+ "schemars 0.8.22",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "cw721"
 version = "0.22.0"
 dependencies = [
@@ -3267,6 +3638,37 @@ dependencies = [
  "serde",
  "thiserror 1.0.69",
  "url",
+]
+
+[[package]]
+name = "cw721-base"
+version = "0.22.0"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw2",
+ "cw721",
+ "serde",
+]
+
+[[package]]
+name = "cw721-roles"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw4",
+ "cw721",
+ "cw721-base",
+ "dao-cw721-extensions",
+ "serde",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -3286,6 +3688,532 @@ dependencies = [
  "sha2 0.10.9",
  "thiserror 1.0.69",
  "whitelist-mtree",
+]
+
+[[package]]
+name = "dao-calendar"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-hooks",
+ "cw-storage-plus",
+ "cw2",
+ "dao-dao-macros",
+ "dao-interface",
+ "schemars 1.2.1",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-cw-orch"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "btsg-ft-factory",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-admin-factory",
+ "cw-fund-distributor",
+ "cw-orch",
+ "cw-payroll-factory",
+ "cw-token-swap",
+ "cw-tokenfactory-issuer",
+ "cw-vesting",
+ "cw20-stake",
+ "cw20-stake-external-rewards",
+ "cw20-stake-reward-distributor",
+ "cw721-base",
+ "cw721-roles",
+ "dao-calendar",
+ "dao-dao-core",
+ "dao-interface",
+ "dao-pre-propose-approval-single",
+ "dao-pre-propose-approver",
+ "dao-pre-propose-multiple",
+ "dao-pre-propose-single",
+ "dao-proposal-condorcet",
+ "dao-proposal-hook-counter",
+ "dao-proposal-multiple",
+ "dao-proposal-single",
+ "dao-proposal-sudo",
+ "dao-rewards-distributor",
+ "dao-test-custom-factory",
+ "dao-voting-cw20-balance",
+ "dao-voting-cw20-staked",
+ "dao-voting-cw4",
+ "dao-voting-cw721-roles",
+ "dao-voting-cw721-staked",
+ "dao-voting-token-staked",
+ "gauge-adapter",
+ "gauge-orchestrator",
+ "serde",
+]
+
+[[package]]
+name = "dao-cw721-extensions"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw4",
+ "cw721",
+]
+
+[[package]]
+name = "dao-dao-core"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-paginate-storage",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw721",
+ "dao-dao-macros",
+ "dao-interface",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-dao-macros"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "dao-hooks"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-hooks",
+ "cw4",
+ "dao-pre-propose-base",
+ "dao-voting",
+]
+
+[[package]]
+name = "dao-interface"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw721",
+]
+
+[[package]]
+name = "dao-pre-propose-approval-single"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-denom",
+ "cw-paginate-storage",
+ "cw-storage-plus",
+ "cw2",
+ "dao-interface",
+ "dao-pre-propose-base",
+ "dao-voting",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-pre-propose-approver"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "dao-interface",
+ "dao-pre-propose-base",
+ "dao-voting",
+]
+
+[[package]]
+name = "dao-pre-propose-base"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-denom",
+ "cw-hooks",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "dao-interface",
+ "dao-voting",
+ "semver 1.0.28",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-pre-propose-multiple"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw2",
+ "dao-pre-propose-base",
+ "dao-voting",
+]
+
+[[package]]
+name = "dao-pre-propose-single"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw2",
+ "dao-pre-propose-base",
+ "dao-voting",
+]
+
+[[package]]
+name = "dao-proposal-condorcet"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "dao-dao-macros",
+ "dao-interface",
+ "dao-voting",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-proposal-hook-counter"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw2",
+ "dao-hooks",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-proposal-multiple"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-hooks",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "dao-dao-macros",
+ "dao-hooks",
+ "dao-interface",
+ "dao-pre-propose-base",
+ "dao-pre-propose-multiple",
+ "dao-voting",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-proposal-single"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-hooks",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "dao-dao-macros",
+ "dao-hooks",
+ "dao-interface",
+ "dao-pre-propose-base",
+ "dao-voting",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-proposal-sudo"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw2",
+ "dao-dao-macros",
+ "dao-interface",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-rbam"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-filter",
+ "cw-ownable",
+ "cw-protobuf-registry",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "dao-interface",
+ "schemars 1.2.1",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-rewards-distributor"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "cw4",
+ "dao-hooks",
+ "dao-interface",
+ "dao-voting",
+ "semver 1.0.28",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-test-custom-factory"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-tokenfactory-issuer",
+ "cw-utils",
+ "cw2",
+ "cw721",
+ "cw721-base",
+ "dao-dao-macros",
+ "dao-interface",
+ "dao-voting",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-testing"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "abstract-cw-multi-test",
+ "btsg-ft-factory",
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-admin-factory",
+ "cw-filter",
+ "cw-hooks",
+ "cw-orch",
+ "cw-payroll-factory",
+ "cw-protobuf-registry",
+ "cw-token-swap",
+ "cw-tokenfactory-issuer",
+ "cw-utils",
+ "cw-vesting",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "cw20-stake",
+ "cw20-stake-external-rewards",
+ "cw20-stake-reward-distributor",
+ "cw4",
+ "cw4-group",
+ "cw721-base",
+ "cw721-roles",
+ "dao-calendar",
+ "dao-cw-orch",
+ "dao-dao-core",
+ "dao-interface",
+ "dao-pre-propose-approval-single",
+ "dao-pre-propose-approver",
+ "dao-pre-propose-multiple",
+ "dao-pre-propose-single",
+ "dao-proposal-condorcet",
+ "dao-proposal-hook-counter",
+ "dao-proposal-multiple",
+ "dao-proposal-single",
+ "dao-proposal-sudo",
+ "dao-rbam",
+ "dao-rewards-distributor",
+ "dao-test-custom-factory",
+ "dao-voting",
+ "dao-voting-cw20-balance",
+ "dao-voting-cw20-staked",
+ "dao-voting-cw4",
+ "dao-voting-cw721-roles",
+ "dao-voting-cw721-staked",
+ "dao-voting-token-staked",
+ "gauge-adapter",
+ "gauge-orchestrator",
+ "osmosis-std",
+ "osmosis-test-tube",
+ "rand 0.8.5",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "dao-voting"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-denom",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw20",
+ "dao-dao-macros",
+ "dao-interface",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-voting-cw20-balance"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "dao-dao-macros",
+ "dao-interface",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-voting-cw20-staked"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "cw20-base",
+ "cw20-stake",
+ "dao-dao-macros",
+ "dao-interface",
+ "dao-voting",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-voting-cw4"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw4",
+ "cw4-group",
+ "dao-dao-macros",
+ "dao-interface",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-voting-cw721-roles"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw4",
+ "cw721",
+ "cw721-base",
+ "dao-cw721-extensions",
+ "dao-dao-macros",
+ "dao-interface",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-voting-cw721-staked"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-hooks",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw721",
+ "cw721-base",
+ "dao-dao-macros",
+ "dao-hooks",
+ "dao-interface",
+ "dao-voting",
+ "nft-controllers",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "dao-voting-token-staked"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-controllers",
+ "cw-hooks",
+ "cw-ownable",
+ "cw-reply-helper",
+ "cw-storage-plus",
+ "cw-tokenfactory-issuer",
+ "cw-utils",
+ "cw2",
+ "dao-dao-macros",
+ "dao-hooks",
+ "dao-interface",
+ "dao-voting",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -4446,6 +5374,41 @@ name = "futures-utils-wasm"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42012b0f064e01aa58b545fe3727f90f7dd4020f4a3ea735b50344965f5a57e9"
+
+[[package]]
+name = "gauge-adapter"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "anybuf 0.5.2",
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-denom",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw20",
+ "semver 1.0.28",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "gauge-orchestrator"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-ownable",
+ "cw-storage-plus",
+ "cw-utils",
+ "cw2",
+ "cw4",
+ "dao-hooks",
+ "dao-interface",
+ "schemars 1.2.1",
+ "serde",
+ "thiserror 1.0.69",
+]
 
 [[package]]
 name = "generic-array"
@@ -5645,6 +6608,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "lazycell"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
+
+[[package]]
 name = "leb128"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5701,6 +6670,12 @@ dependencies = [
 
 [[package]]
 name = "linux-raw-sys"
+version = "0.4.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
+
+[[package]]
+name = "linux-raw-sys"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
@@ -5725,6 +6700,15 @@ name = "log"
 version = "0.4.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897"
+
+[[package]]
+name = "lol_alloc"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "83e5106554cabc97552dcadf54f57560ae6af3276652f82ca2be06120dc4c5dc"
+dependencies = [
+ "spin",
+]
 
 [[package]]
 name = "lru"
@@ -5923,6 +6907,17 @@ name = "new_debug_unreachable"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
+
+[[package]]
+name = "nft-controllers"
+version = "2.8.0-alpha.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-storage-plus",
+ "cw-utils",
+ "thiserror 1.0.69",
+]
 
 [[package]]
 name = "nois"
@@ -6166,6 +7161,57 @@ name = "option-ext"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
+
+[[package]]
+name = "ordered-float"
+version = "2.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68f19d67e5a2795c94e73e0bb1cc1a7edeb2e28efd39e2e1c9b7a40c1108b11c"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
+name = "osmosis-std"
+version = "0.26.0"
+dependencies = [
+ "chrono",
+ "cosmwasm-std 3.0.3-dev",
+ "cw-schema",
+ "osmosis-std-derive",
+ "prost",
+ "prost-types",
+ "schemars 0.8.22",
+ "serde",
+ "serde-cw-value",
+]
+
+[[package]]
+name = "osmosis-std-derive"
+version = "0.20.1"
+dependencies = [
+ "itertools 0.10.5",
+ "proc-macro2",
+ "prost-types",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "osmosis-test-tube"
+version = "25.0.0"
+dependencies = [
+ "base64 0.21.7",
+ "bindgen 0.69.5",
+ "cosmrs",
+ "cosmwasm-std 3.0.3-dev",
+ "osmosis-std",
+ "prost",
+ "serde",
+ "serde_json",
+ "test-tube",
+ "thiserror 1.0.69",
+]
 
 [[package]]
 name = "ownership-verifier"
@@ -6742,6 +7788,19 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.117",
+]
+
+[[package]]
+name = "prost-reflect"
+version = "0.16.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b89455ef41ed200cafc47c76c552ee7792370ac420497e551f16123a9135f76e"
+dependencies = [
+ "base64 0.22.1",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde-value",
 ]
 
 [[package]]
@@ -7512,6 +8571,19 @@ dependencies = [
 
 [[package]]
 name = "rustix"
+version = "0.38.44"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fdb5bc1ae2baa591800df16c9ca78619bf65c0488b41b96ccec5d11220d8c154"
+dependencies = [
+ "bitflags 2.11.0",
+ "errno",
+ "libc",
+ "linux-raw-sys 0.4.15",
+ "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "rustix"
 version = "1.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6fe4565b9518b83ef4f91bb47ce29620ca828bd32cb7e408f0062e9930ba190"
@@ -7519,7 +8591,7 @@ dependencies = [
  "bitflags 2.11.0",
  "errno",
  "libc",
- "linux-raw-sys",
+ "linux-raw-sys 0.12.1",
  "windows-sys 0.61.2",
 ]
 
@@ -7799,6 +8871,8 @@ dependencies = [
  "cw-headstash-manifold",
  "cw-infuser-scripts",
  "cw-orch",
+ "cw4",
+ "dao-testing",
  "dotenv",
  "env_logger 0.11.10",
  "hex",
@@ -8002,6 +9076,16 @@ version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f05da0d153dd4595bdffd5099dc0e9ce425b205ee648eb93437ff7302af8c9a5"
 dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "serde-value"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3a1a3341211875ef120e117ea7fd5228530ae7e7036a779fdc9117be6b3282c"
+dependencies = [
+ "ordered-float",
  "serde",
 ]
 
@@ -8231,6 +9315,7 @@ dependencies = [
 name = "shit-scripts"
 version = "0.1.0"
 dependencies = [
+ "cosmwasm-std 3.0.3-dev",
  "cw-orch",
  "cw-shit-denom",
  "cw-shitstrap",
@@ -8355,6 +9440,9 @@ name = "spin"
 version = "0.9.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
+dependencies = [
+ "lock_api",
+]
 
 [[package]]
 name = "spki"
@@ -8677,7 +9765,7 @@ dependencies = [
  "fastrand",
  "getrandom 0.4.2",
  "once_cell",
- "rustix",
+ "rustix 1.1.4",
  "windows-sys 0.61.2",
 ]
 
@@ -8887,6 +9975,20 @@ dependencies = [
  "cw721",
  "terp-account",
  "terp721-account",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "test-tube"
+version = "0.7.0"
+dependencies = [
+ "base64 0.21.7",
+ "cosmrs",
+ "cosmwasm-std 3.0.3-dev",
+ "osmosis-std",
+ "prost",
+ "serde",
+ "serde_json",
  "thiserror 1.0.69",
 ]
 
@@ -9641,7 +10743,7 @@ version = "5.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b104b9437e9100943fb01880cc210ebe250cc4aa2f7e121f068033a76d29cc4"
 dependencies = [
- "bindgen",
+ "bindgen 0.70.1",
  "bytes",
  "cfg-if",
  "cmake",
@@ -9873,6 +10975,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22cfaf3c063993ff62e73cb4311efde4db1efb31ab78a3e5c457939ad5cc0bed"
 dependencies = [
  "rustls-pki-types",
+]
+
+[[package]]
+name = "which"
+version = "4.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87ba24419a2078cd2b0f2ede2691b6c66d8e47836da3b6db8265ebad47afbfc7"
+dependencies = [
+ "either",
+ "home",
+ "once_cell",
+ "rustix 0.38.44",
 ]
 
 [[package]]
@@ -10433,6 +11547,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ffae5123b2d3fc086436f8834ae3ab053a283cfac8fe0a0b8eaae044768a4c4"
 
 [[package]]
+name = "wynd-utils"
+version = "0.4.2"
+dependencies = [
+ "cosmwasm-schema 3.0.3-dev",
+ "cosmwasm-std 3.0.3-dev",
+ "schemars 1.2.1",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "wyz"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10448,7 +11573,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32e45ad4206f6d2479085147f02bc2ef834ac85886624a23575ae137c8aa8156"
 dependencies = [
  "libc",
- "rustix",
+ "rustix 1.1.4",
 ]
 
 [[package]]
@@ -10733,6 +11858,7 @@ dependencies = [
  "cosmwasm-std 3.0.3-dev",
  "cw-headstash",
  "cw-headstash-manifold",
+ "cw-no-rick",
  "cw-orch",
  "ff",
  "group",

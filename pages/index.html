@@ -1052,6 +1052,8 @@
 
 <body>
     <canvas id="glow-canvas"></canvas>
+    <script src="/lib/faucet.js"></script>
+    <script src="/lib/fab.js"></script>
     <div class="container">
         <div class="title">
             <span class="title-static">Terp Network</span>
@@ -1673,23 +1675,6 @@
         window.addEventListener('resize', checkMobileAndUpdateOverlay);
     </script>
 
-<div id="fab-nav" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;">
-<div id="fab-menu" style="position:absolute;bottom:58px;right:0;display:none;flex-direction:column;gap:2px;padding:0.5rem;background:rgba(10,10,15,0.95);border:1px solid rgba(152,232,193,0.2);border-radius:12px;min-width:150px;box-shadow:0 8px 40px rgba(0,0,0,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
-<div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(152,232,193,0.4);padding:0.25rem 0.75rem 0.1rem;font-family:Satoshi,sans-serif;">Navigate</div>
- <a href="/svg" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">SVG</a>
-<a href="/tabs" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Names</a>
-<!--
-<a href="/ibc" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">IBC</a>
-<a href="/brain" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Brain</a>
-<div style="height:1px;background:rgba(152,232,193,0.1);margin:0.15rem 0.5rem;"></div>
-<a href="/no-rick" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">No Rick</a>
-<a href="/passkey" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Passkey</a>
-<a href="/tx" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Tx Builder</a>
-<a href="/admin" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Admin</a> -->
-</div>
-<button onclick="var m=document.getElementById('fab-menu');var o=m.style.display==='flex';m.style.display=o?'none':'flex';" style="width:48px;height:48px;border-radius:50%;border:none;background:#98e8c1;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;box-shadow:0 4px 20px rgba(152,232,193,0.3);" aria-label="Menu">+</button>
-</div>
-<script>document.addEventListener("click",function(e){var f=document.getElementById("fab-nav");if(f&&!f.contains(e.target))document.getElementById("fab-menu").style.display="none"});</script>
-</body>
+ </body>
 
 </html>

@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="Register your Terp Account Billboard on-chain. Human-readable identities for Terp Network addresses.">
+    <meta name="description"
+        content="Register your Terp Account Billboard on-chain. Human-readable identities for Terp Network addresses.">
     <title>TABS | Terp Network</title>
 
     <meta property="og:title" content="TABS | Terp Network">
-    <meta property="og:description" content="Register your on-chain identity. Terp Account Billboards for Terp Network.">
+    <meta property="og:description"
+        content="Register your on-chain identity. Terp Account Billboards for Terp Network.">
     <meta property="og:type" content="website">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="TABS | Terp Network">
@@ -26,28 +28,60 @@
     <style>
         /* Main */
         .main {
-            position: relative; z-index: 1;
-            max-width: 640px; width: 100%;
+            position: relative;
+            z-index: 1;
+            max-width: 640px;
+            width: 100%;
             margin: 0 auto;
             padding: 7rem 1.5rem 3rem;
             min-height: 100vh;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
         .page-title {
-            font-size: 2.2rem; font-weight: 500;
+            font-size: 2.2rem;
+            font-weight: 500;
             color: #cfffcf;
             text-shadow: 0 0 30px rgba(183, 255, 183, 0.07);
             text-align: center;
             margin-bottom: 0.5rem;
         }
 
+        /* Add to your <style> block */
+        .btn-docs {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(152, 232, 193, 0.2);
+            background: rgba(152, 232, 193, 0.06);
+            color: rgba(152, 232, 193, 0.6);
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-docs:hover {
+            background: rgba(152, 232, 193, 0.12);
+            border-color: rgba(152, 232, 193, 0.4);
+            color: #98e8c1;
+        }
+
         .page-subtitle {
-            font-size: 0.85rem; color: #ffffda;
+            font-size: 0.85rem;
+            color: #ffffda;
             text-shadow: 0 0 3px rgba(71, 50, 102, 0.9);
-            text-transform: uppercase; letter-spacing: 0.12em;
-            text-align: center; margin-bottom: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            text-align: center;
+            margin-bottom: 2.5rem;
         }
 
         /* Search / Mint Card */
@@ -61,7 +95,8 @@
         }
 
         .name-input-wrap {
-            display: flex; gap: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
 
@@ -70,12 +105,18 @@
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(152, 232, 193, 0.2);
             border-radius: 6px;
-            color: #f8f8f2; padding: 0.8rem 1rem;
+            color: #f8f8f2;
+            padding: 0.8rem 1rem;
             font-family: 'Satoshi', sans-serif;
-            font-size: 1rem; outline: none;
+            font-size: 1rem;
+            outline: none;
             transition: border-color 0.2s ease;
         }
-        .name-input::placeholder { color: rgba(210, 211, 216, 0.4); }
+
+        .name-input::placeholder {
+            color: rgba(210, 211, 216, 0.4);
+        }
+
         .name-input:focus {
             border-color: rgba(152, 232, 193, 0.5);
             box-shadow: 0 0 15px rgba(152, 232, 193, 0.08);
@@ -84,18 +125,26 @@
         .btn-check {
             background: rgba(152, 232, 193, 0.1);
             border: 1px solid rgba(152, 232, 193, 0.3);
-            color: #98e8c1; padding: 0.8rem 1.2rem;
+            color: #98e8c1;
+            padding: 0.8rem 1.2rem;
             font-family: 'Satoshi', sans-serif;
-            font-size: 0.85rem; font-weight: 500;
-            cursor: pointer; border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
             transition: all 0.2s ease;
             white-space: nowrap;
         }
+
         .btn-check:hover {
             background: rgba(152, 232, 193, 0.2);
             border-color: rgba(152, 232, 193, 0.5);
         }
-        .btn-check:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-check:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
 
         /* Status display */
         .name-status {
@@ -105,18 +154,21 @@
             font-size: 0.85rem;
             display: none;
         }
+
         .name-status.available {
             display: block;
             background: rgba(152, 232, 193, 0.08);
             border: 1px solid rgba(152, 232, 193, 0.25);
             color: #98e8c1;
         }
+
         .name-status.taken {
             display: block;
             background: rgba(254, 125, 125, 0.08);
             border: 1px solid rgba(254, 125, 125, 0.25);
             color: #fe7d7d;
         }
+
         .name-status.error {
             display: block;
             background: rgba(189, 147, 249, 0.08);
@@ -126,21 +178,29 @@
 
         /* Pricing info */
         .pricing-info {
-            display: flex; gap: 1.5rem; flex-wrap: wrap;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
             margin-bottom: 1.5rem;
         }
 
         .pricing-item {
-            display: flex; flex-direction: column; gap: 0.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
         }
 
         .pricing-label {
-            font-size: 0.65rem; color: rgba(207, 255, 207, 0.5);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.65rem;
+            color: rgba(207, 255, 207, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .pricing-value {
-            font-size: 1rem; color: #98e8c1; font-weight: 500;
+            font-size: 1rem;
+            color: #98e8c1;
+            font-weight: 500;
         }
 
         /* Mint button */
@@ -148,82 +208,450 @@
             width: 100%;
             background: linear-gradient(135deg, rgba(152, 232, 193, 0.15), rgba(152, 232, 193, 0.08));
             border: 1px solid rgba(152, 232, 193, 0.4);
-            color: #cfffcf; padding: 0.9rem 1.5rem;
+            color: #cfffcf;
+            padding: 0.9rem 1.5rem;
             font-family: 'Satoshi', sans-serif;
-            font-size: 1rem; font-weight: 500;
-            cursor: pointer; border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
             transition: all 0.3s ease;
-            text-transform: uppercase; letter-spacing: 0.1em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
+
         .btn-mint:hover {
             background: linear-gradient(135deg, rgba(152, 232, 193, 0.25), rgba(152, 232, 193, 0.15));
             border-color: rgba(152, 232, 193, 0.6);
             box-shadow: 0 0 25px rgba(152, 232, 193, 0.15);
             transform: translateY(-1px);
         }
-        .btn-mint:active { transform: translateY(0); }
-        .btn-mint:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-mint:active {
+            transform: translateY(0);
+        }
+
+        .btn-mint:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
         /* Toast */
         .toast-container {
-            position: fixed; bottom: 1.5rem; right: 1.5rem;
-            z-index: 300; display: flex; flex-direction: column;
-            gap: 0.5rem; max-width: 360px;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 360px;
         }
+
         .toast {
-            padding: 0.8rem 1.2rem; border-radius: 6px;
-            font-size: 0.8rem; line-height: 1.4;
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            line-height: 1.4;
             backdrop-filter: blur(12px);
             animation: toast-in 0.3s ease forwards;
             border: 1px solid;
         }
-        .toast.success { background: rgba(152, 232, 193, 0.1); border-color: rgba(152, 232, 193, 0.3); color: #98e8c1; }
-        .toast.error { background: rgba(254, 125, 125, 0.1); border-color: rgba(254, 125, 125, 0.3); color: #fe7d7d; }
-        .toast.info { background: rgba(189, 147, 249, 0.1); border-color: rgba(189, 147, 249, 0.3); color: #bd93f9; }
-        .toast.removing { animation: toast-out 0.3s ease forwards; }
 
-        @keyframes toast-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes toast-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(20px); } }
+        .toast.success {
+            background: rgba(152, 232, 193, 0.1);
+            border-color: rgba(152, 232, 193, 0.3);
+            color: #98e8c1;
+        }
+
+        .toast.error {
+            background: rgba(254, 125, 125, 0.1);
+            border-color: rgba(254, 125, 125, 0.3);
+            color: #fe7d7d;
+        }
+
+        .toast.info {
+            background: rgba(189, 147, 249, 0.1);
+            border-color: rgba(189, 147, 249, 0.3);
+            color: #bd93f9;
+        }
+
+        .toast.removing {
+            animation: toast-out 0.3s ease forwards;
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toast-out {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
 
         /* Loading */
-        .loading { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 2rem 0; color: #d2d3d8; }
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 2rem 0;
+            color: #d2d3d8;
+        }
+
         .spinner {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border: 2px solid rgba(152, 232, 193, 0.2);
             border-top-color: #98e8c1;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .page-title { font-size: 1.6rem; }
-            .page-subtitle { font-size: 0.7rem; }
-            .header { padding: 0.5rem 1rem; }
-            .header-nav { gap: 1rem; }
-            .nav-link { font-size: 0.75rem; }
-            .name-card { padding: 1.5rem; }
-            .name-input-wrap { flex-direction: column; }
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .page-subtitle {
+                font-size: 0.7rem;
+            }
+
+            .header {
+                padding: 0.5rem 1rem;
+            }
+
+            .header-nav {
+                gap: 1rem;
+            }
+
+            .nav-link {
+                font-size: 0.75rem;
+            }
+
+            .name-card {
+                padding: 1.5rem;
+            }
+
+            .name-input-wrap {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
-            .btn-wallet { font-size: 0.7rem; padding: 0.4rem 0.6rem; }
+            .btn-wallet {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+
+        /* ─── Documentation Modal ─── */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: relative;
+            z-index: 1;
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid rgba(152, 232, 193, 0.15);
+            border-radius: 12px;
+            width: 90vw;
+            max-width: 580px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(152, 232, 193, 0.1);
+        }
+
+        .modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #cfffcf;
+        }
+
+        .modal-close {
+            background: none;
+            border: 1px solid rgba(152, 232, 193, 0.12);
+            color: #d2d3d8;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #fe7d7d;
+            border-color: rgba(254, 125, 125, 0.3);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .doc-section {
+            margin-bottom: 1.75rem;
+        }
+
+        .doc-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .doc-heading {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #98e8c1;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .doc-text {
+            font-size: 0.85rem;
+            color: #d2d3d8;
+            line-height: 1.65;
+        }
+
+        .doc-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .doc-list li {
+            font-size: 0.85rem;
+            color: #d2d3d8;
+            line-height: 1.6;
+            padding: 0.25rem 0 0.25rem 1.2rem;
+            position: relative;
+        }
+
+        .doc-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: rgba(152, 232, 193, 0.4);
+            font-size: 0.75rem;
+        }
+
+        .doc-code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: rgba(152, 232, 193, 0.06);
+            border: 1px solid rgba(152, 232, 193, 0.15);
+            border-radius: 3px;
+            padding: 0.1rem 0.4rem;
+            color: #98e8c1;
+        }
+
+        .doc-pricing-table {
+            margin-top: 0.75rem;
+            border: 1px solid rgba(152, 232, 193, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .doc-pricing-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.55rem 0.9rem;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(152, 232, 193, 0.06);
+            color: #d2d3d8;
+        }
+
+        .doc-pricing-row:last-child {
+            border-bottom: none;
+        }
+
+        .doc-pricing-row span:last-child {
+            color: #98e8c1;
+            font-weight: 500;
+        }
+
+        .doc-pricing-header {
+            background: rgba(152, 232, 193, 0.04);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(207, 255, 207, 0.5);
+        }
+
+        .doc-pricing-header span:last-child {
+            color: rgba(207, 255, 207, 0.5);
+            font-weight: 400;
+        }
+
+        /* ─── Unified Wallet Dock ─── */
+        .wallet-dock {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .wallet-dock-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: rgba(10, 10, 15, 0.9);
+            border: 1px solid rgba(152, 232, 193, 0.25);
+            border-radius: 999px;
+            color: #98e8c1;
+            font-family: 'Satoshi', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .wallet-dock-btn:hover {
+            border-color: rgba(152, 232, 193, 0.5);
+            background: rgba(152, 232, 193, 0.08);
+        }
+
+        .wallet-dock-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(152, 232, 193, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .wallet-dock-label {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .wallet-dock-btn.connected {
+            border-color: rgba(152, 232, 193, 0.35);
+        }
+
+        .wallet-dock-btn.connected .wallet-dock-icon {
+            background: rgba(152, 232, 193, 0.2);
+        }
+
+        .wallet-dock-fab {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(254, 125, 125, 0.25);
+            background: rgba(254, 125, 125, 0.08);
+            color: #fe7d7d;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .wallet-dock-fab:hover {
+            background: rgba(254, 125, 125, 0.15);
+            border-color: rgba(254, 125, 125, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .wallet-dock-label {
+                display: none;
+            }
+
+            .wallet-dock-btn {
+                padding: 0.55rem;
+                border-radius: 50%;
+            }
         }
     </style>
 </head>
 
 <body>
-
-    <canvas id="glow-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
-
+    <script src="/lib/fab.js"></script>
+    <canvas id="main-canvas"
+        style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
     <main class="main">
-        <h1 class="page-title">TABS</h1>
+
+        <!-- Replace the existing title block with this -->
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+            <h1 class="page-title" style="margin-bottom:0;">TABS</h1>
+            <button class="btn-docs" onclick="document.getElementById('modal-docs').style.display='flex'"
+                aria-label="Documentation" title="Documentation">?</button>
+        </div>
         <div class="page-subtitle">Terp Account Billboards</div>
+
+
+        <!-- ─── Unified Wallet Component ─── -->
+
 
         <div class="name-card">
             <div class="name-input-wrap">
-                <input type="text" class="name-input" id="name-input" placeholder="your-name" maxlength="64" autocomplete="off">
+                <input type="text" class="name-input" id="name-input" placeholder="your-name" maxlength="64"
+                    autocomplete="off">
                 <button class="btn-check" id="btn-check" onclick="checkName()">Check</button>
             </div>
 
@@ -264,27 +692,26 @@
     <script type="module">
         import { loadSiteConfig } from '/lib/config-loader.js';
         import { applyNavGuard } from '/lib/nav-guard.js';
+
         applyNavGuard();
         // ═══════════════════════════════════════════════════════════════
         // CONFIGURATION
         // ═══════════════════════════════════════════════════════════════
-
         const CONFIG = {
             chainId: "morocco-1",
             chainName: "Terp Network",
             rpc: "https://rpc.terp.network",
             rest: "https://api.terp.network",
-            minterContract: "terp1yvgh8xeju5dyr0zxlkvq09htvhjj20fncp5g58np4u25g8rkpgjsgsyg5s",
-            accountContract: "terp142kvnl56hs7jacmwysswlhp4f4eyt7ljclcy9ak7v3cgg3ldhzzs6ye4vu",
+            minterContract: "",           // will be populated by loadSiteConfig
+            accountMinterContract: "",    // will be populated by loadSiteConfig
+            accountContract: "",
             explorerBase: "https://ping.pub/terp",
             bech32Prefix: "terp",
             denom: "uthiol",
             denomDisplay: "THIOL",
             denomDecimals: 6,
         };
-
-        // Async config overlay — merge from config-loader (on-chain + static)
-        loadSiteConfig(CONFIG).catch(() => {});
+        await loadSiteConfig(CONFIG);
 
         const CHAIN_SUGGEST = {
             chainId: CONFIG.chainId,
@@ -315,7 +742,7 @@
 
         // Auto-suggest chain to Keplr when testing on localhost
         if (window.location.hostname === "localhost" && window.keplr) {
-            window.keplr.experimentalSuggestChain(CHAIN_SUGGEST).catch(() => {});
+            window.keplr.experimentalSuggestChain(CHAIN_SUGGEST).catch(() => { });
         }
 
         const COSMES_CHAIN_INFO = [{
@@ -367,6 +794,8 @@
                 return false;
             }
         }
+
+
 
         // ═══════════════════════════════════════════════════════════════
         // COSMES ADAPTERS
@@ -558,7 +987,7 @@
 
             try {
                 const adapter = createQueryAdapter(CONFIG.rpc);
-                const minterQuery = new AccountMinterQueryClient(adapter, CONFIG.minterContract);
+                const minterQuery = new AccountMinterQueryClient(adapter, CONFIG.accountMinterContract);
 
                 // Check if name has an existing ask (means it's minted)
                 const ask = await minterQuery.ask({ tokenId: name });
@@ -738,7 +1167,7 @@
         // ═══════════════════════════════════════════════════════════════
 
         (function initBackground() {
-            const canvas = document.getElementById("glow-canvas");
+            const canvas = document.getElementById("main-canvas");
             const ctx = canvas.getContext("2d");
             let width, height, centerX, centerY, time = 0;
 
@@ -839,28 +1268,85 @@
         init().catch(err => {
             console.error("Init failed:", err);
         });
+
+
     </script>
 
-<div id="fab-wallet-stack" style="position:fixed;bottom:6rem;right:1.5rem;z-index:9998;display:flex;flex-direction:column;gap:0.5rem;align-items:center;">
-<button id="faucet-btn" style="display:none;width:40px;height:40px;border-radius:50%;border:none;background:#ffb86c;color:#000;cursor:pointer;font-size:14px;font-weight:500;box-shadow:0 4px 15px rgba(255,184,108,0.3);align-items:center;justify-content:center;" aria-label="Faucet" title="Faucet">F</button>
-<button id="btn-wallet" style="width:40px;height:40px;border-radius:50%;border:none;background:rgba(152,232,193,0.15);border:1px solid rgba(152,232,193,0.4);color:#98e8c1;cursor:pointer;font-size:16px;font-weight:400;box-shadow:0 4px 15px rgba(152,232,193,0.15);display:flex;align-items:center;justify-content:center;" aria-label="Connect Wallet" title="Connect Wallet">W</button>
-</div>
-<div id="fab-nav" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;">
-<div id="fab-menu" style="position:absolute;bottom:58px;right:0;display:none;flex-direction:column;gap:2px;padding:0.5rem;background:rgba(10,10,15,0.95);border:1px solid rgba(152,232,193,0.2);border-radius:12px;min-width:150px;box-shadow:0 8px 40px rgba(0,0,0,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
-<div style="font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(152,232,193,0.4);padding:0.25rem 0.75rem 0.1rem;font-family:Satoshi,sans-serif;">Navigate</div>
-<a href="/svg" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">SVG</a>
-<a href="/tabs" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#98e8c1;background:rgba(152,232,193,0.08);font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Names</a>
-<!-- <a href="/ibc" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">IBC</a> -->
-<!-- <a href="/brain" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Brain</a> -->
-<div style="height:1px;background:rgba(152,232,193,0.1);margin:0.15rem 0.5rem;"></div>
-<a href="/no-rick" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">No Rick</a>
-<!-- <a href="/passkey" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Passkey</a>
-<a href="/tx" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Tx Builder</a>
-<a href="/admin" style="display:block;padding:0.5rem 0.75rem;border-radius:6px;color:#d2d3d8;font-family:Satoshi,sans-serif;font-size:0.8rem;font-weight:400;text-decoration:none;">Admin</a> -->
-</div>
-<button onclick="var m=document.getElementById('fab-menu');var o=m.style.display==='flex';m.style.display=o?'none':'flex';" style="width:48px;height:48px;border-radius:50%;border:none;background:#98e8c1;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:300;box-shadow:0 4px 20px rgba(152,232,193,0.3);" aria-label="Menu">+</button>
-</div>
-<script>document.addEventListener("click",function(e){var f=document.getElementById("fab-nav");if(f&&!f.contains(e.target))document.getElementById("fab-menu").style.display="none"});</script>
+    <script>
+        window.openDocModal = function () {
+            document.getElementById('modal-docs').style.display = 'flex';
+        };
+        window.closeDocModal = function () {
+            document.getElementById('modal-docs').style.display = 'none';
+        };
+    </script>
+
+    <!-- ─── Documentation Modal ─── -->
+    <div class="modal" id="modal-docs" style="display:none">
+        <div class="modal-backdrop" onclick="closeDocModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Documentation</h2>
+                <button class="modal-close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="doc-section">
+                    <h3 class="doc-heading">What are TABS?</h3>
+                    <p class="doc-text">Terp Account Billboards are on-chain identities that map human-readable
+                        names to Terp Network addresses. Once registered, a name permanently resolves to your
+                        wallet.</p>
+                </div>
+
+                <div class="doc-section">
+                    <h3 class="doc-heading">Pricing</h3>
+                    <p class="doc-text">Cost is calculated from the length of the name you register. Shorter names
+                        require a higher premium. The price components are derived from the contract's configured
+                        tier rates.</p>
+                    <div class="doc-pricing-table">
+                        <div class="doc-pricing-row doc-pricing-header">
+                            <span>Name Length</span>
+                            <span>Base Cost</span>
+                        </div>
+                        <div class="doc-pricing-row">
+                            <span>1 – 3 chars</span>
+                            <span id="doc-tier-1">--</span>
+                        </div>
+                        <div class="doc-pricing-row">
+                            <span>4 – 6 chars</span>
+                            <span id="doc-tier-2">--</span>
+                        </div>
+                        <div class="doc-pricing-row">
+                            <span>7 – 9 chars</span>
+                            <span id="doc-tier-3">--</span>
+                        </div>
+                        <div class="doc-pricing-row">
+                            <span>10+ chars</span>
+                            <span id="doc-tier-4">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h3 class="doc-heading">Rules</h3>
+                    <ul class="doc-list">
+                        <li>Only lowercase alphanumeric characters and hyphens</li>
+                        <li>Must start with a letter</li>
+                        <li>Cannot end with a hyphen</li>
+                        <li>Minimum 1 character, maximum 64 characters</li>
+                        <li>Names are permanent — no transfers or releases</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h3 class="doc-heading">Resolution</h3>
+                    <p class="doc-text">Registered names resolve on-chain. Any dApp integrated with the TABS
+                        registry can look up <code class="doc-code">your-name</code> and retrieve the owning
+                        address.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

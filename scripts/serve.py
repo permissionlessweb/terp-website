@@ -6,7 +6,11 @@ import urllib.request
 import urllib.error
 
 PORT = int(os.environ.get("WEBSITE_PORT", "3000"))
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
+print(f"ROOT = {ROOT}")
+print(f"pages dir exists: {os.path.isdir(os.path.join(ROOT, 'pages'))}")
+if os.path.isdir(os.path.join(ROOT, 'pages')):
+    print(f"pages contents: {os.listdir(os.path.join(ROOT, 'pages'))}")
 RPC_PROXY = os.environ.get("CHAIN_RPC", "http://localhost:26657")  # proxied at /rpc to avoid CORS in dev
 
 # Auto-discover routes from pages/*.html
