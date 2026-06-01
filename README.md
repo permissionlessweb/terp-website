@@ -3,11 +3,29 @@
 Official website for Terp Network, featuring the terp-core installer integration.
 
 ## TODO
-- scripts: Fix `Error: code: 'Unknown error', message: "failed to execute message; message index: 0: Error calling the VM: Error during static Wasm validation: Wasm bytecode could not be deserialized. Deserialization error: \"bulk memory support is not enabled (at offset 0xd9e)\": create wasm contract failed [/code/build/zk-deps/zk-wasmd/x/wasm/keeper/keeper.go:331] with gas used: '4061827'"` for dao-contracts
-- scripts: fix path of
 - svg minting and viewing page
 - smart-account registration
 - view-text-records | manage text records (update,remove,add)
+- html script libraries:
+    - load chain config:
+        - load static record with ipfs/blossom cid
+        - fetch content from indexer 
+        - update local storage for caching 
+    - sound and verifiable wallet lifecycle workflow
+        - smart account middleware
+        - pfpk indexer libary 
+    - dao community widgets (websites tuned with iframe support)
+        - calendar widget 
+        - forum widget 
+        - dashboard widget (staking,swapping)
+- hardnen soundess of ibc support
+    - integrate (or create) argus formulas/actions for various common ibc actions:
+        - multichain wallet balance
+        - multichain swap support (self defined skip-api workflow)
+        - ibc tx explorer modal
+        - self relay modal
+        - 
+
 
 ## Features
 - wallet connecting && chain client via cosmes: <https://www.npmjs.com/package/@goblinhunt/cosmes>

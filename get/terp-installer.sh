@@ -1,27 +1,69 @@
 #!/bin/sh
-# terp-installer.sh — Download or build terpd and bootstrap a Terp node
+# terp-installer.sh — Install terpd and interactively bootstrap a node
 #
-# This script downloads the terpd Go binary for your platform (Linux)
-# or builds from source (macOS), then delegates all node setup to the
-# native `terpd bootstrap` command, which handles:
-#   init, genesis download, state-sync, pruning, cosmovisor, systemd
+# Downloads the terpd binary for your platform (Linux/macOS), then runs an
+# interactive setup wizard before delegating to `terpd bootstrap`.
 #
 # Usage:
-#   curl -sL https://terp.network/get/terp-installer.sh | sh
-#   curl -sL https://terp.network/get/terp-installer.sh | sh -s -- --network morocco-1
-#   curl -sL https://terp.network/get/terp-installer.sh | sh -s -- --network 120u-1 --cosmovisor --service
+#   curl -sL https://terp.network/get | bash
+#   curl -sL https://terp.network/get | bash -s -- --network morocco-1
+#   curl -sL https://terp.network/get | bash -s -- --setup-only
 #
-# All flags after -- are passed through to `terpd bootstrap`.
-# See: terpd bootstrap --help
+# Flags after -- are passed through to `terpd bootstrap`, which handles:
+#   init, genesis download, state-sync, pruning, cosmovisor, systemd
+#
+# When no flags are given and the terminal is interactive, a setup wizard
+# walks through network, sync mode, pruning, and other options interactively.
 
 set -euo pipefail
 
-# ── Configuration ──────────────────────────────────────────────────────
-TERPD_VERSION="5.1.0"
-GITHUB_BASE="https://github.com/terpnetwork/terp-core/releases/download"
+# ── Configuration (user‑overridable via env vars) ────────────────────────
+TERPD_VERSION="${TERPD_VERSION:-5.1.10}"
+S3_BASE="${S3_BASE:-https://s3.terp.network/snapshots}"
 BINARY_DEST="${TERPD_BIN:-$HOME/go/bin/terpd}"
 
-# ── Detect platform ──────────────────────────────────────────────────
+# ── TTY helpers (work with curl | bash pipes) ──────────────────────────
+# stdin_available returns 0 if user interaction is possible.
+stdin_available() {
+    [ -t 0 ] || [ -e /dev/tty ]
+}
+
+# prompt VAR "Display text" [default] — reads one line into VAR.
+# If stdin is piped and /dev/tty is available, reads from /dev/tty.
+prompt() {
+    local __var=$1 __prompt=$2 __default=${3:-}
+    local __val
+    if [ -t 0 ]; then
+        printf "%s " "$__prompt"
+        read -r __val
+    elif [ -e /dev/tty ]; then
+        printf "%s " "$__prompt" > /dev/tty
+        read -r __val < /dev/tty
+    else
+        __val="$__default"
+    fi
+    [ -z "$__val" ] && __val="$__default"
+    eval "$__var=\$__val"
+}
+
+# confirm "Prompt" [default] — returns 0 if yes, 1 if no.
+confirm() {
+    local __prompt=$1 __default=${2:-N}
+    local __yn
+    if [ -t 0 ]; then
+        printf "%s [%s/%s] " "$__prompt" "$(echo "$__default" | tr 'YN' 'yn')" "$(echo "$__default" | tr 'YN' 'YN')"
+        read -r __yn
+    elif [ -e /dev/tty ]; then
+        printf "%s [%s/%s] " "$__prompt" "$(echo "$__default" | tr 'YN' 'yn')" "$(echo "$__default" | tr 'YN' 'YN')" > /dev/tty
+        read -r __yn < /dev/tty
+    else
+        __yn="$__default"
+    fi
+    [ -z "$__yn" ] && __yn="$__default"
+    case "$__yn" in [yY]|[yY][eE][sS]) return 0;; *) return 1;; esac
+}
+
+# ── Platform detection ─────────────────────────────────────────────────
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 ARCH="$(uname -m)"
 
@@ -38,94 +80,118 @@ esac
 
 case "$OS" in
     linux)  BINARY_NAME="terpd-linux-${ARCH}" ;;
-    darwin) BINARY_NAME="" ;;
+    darwin) BINARY_NAME="terpd-darwin-${ARCH}" ;;
     *)
         echo "Error: Unsupported OS '$OS'" >&2
         exit 1
         ;;
 esac
 
-# ── Download or build terpd ──────────────────────────────────────────
-if [ -n "$BINARY_NAME" ]; then
-    DOWNLOAD_URL="${GITHUB_BASE}/v${TERPD_VERSION}/${BINARY_NAME}"
+# ── Detect network from flags or env, else default to mainnet ──────────
+if echo "$*" | grep -q -- "--network 120u-1\|--network=120u-1"; then
+    NETWORK="120u-1"
+elif [ "${TERP_NETWORK:-}" = "120u-1" ]; then
+    NETWORK="120u-1"
 else
-    DOWNLOAD_URL=""
+    NETWORK="morocco-1"
 fi
 
-echo "=== Terp Network Installer ==="
+# Map network name to S3 bucket folder
+case "$NETWORK" in
+    120u-1)    S3_NET="testnet"  ;;
+    morocco-1) S3_NET="mainnet"  ;;
+    *)         S3_NET="mainnet"  ;;
+esac
+
+DOWNLOAD_URL="${S3_BASE}/${S3_NET}/releases/latest/${BINARY_NAME}"
+
+# ── Header ──────────────────────────────────────────────────────────────
+echo "=== Terp Network Installer v${TERPD_VERSION} ==="
 echo ""
-echo "  Version : v${TERPD_VERSION}"
-echo "  Platform: ${OS}/${ARCH}"
-echo "  Binary  : ${BINARY_DEST}"
-if [ -n "$DOWNLOAD_URL" ]; then
-    echo "  Source  : ${DOWNLOAD_URL}"
-else
-    echo "  Source  : build from source (go install)"
-fi
+echo "  Platform : ${OS}/${ARCH}"
+echo "  Network  : ${NETWORK}"
+echo "  Binary   : ${BINARY_DEST}"
+echo "  Source   : ${DOWNLOAD_URL}"
 echo ""
 
-# Check if terpd already exists
-if command -v terpd >/dev/null 2>&1; then
-    EXISTING_VERSION="$(terpd version 2>/dev/null || echo 'unknown')"
-    echo "terpd is already installed (version: ${EXISTING_VERSION})"
-    if [ -t 0 ]; then
-        printf "Overwrite? [y/N] "
-        read -r OVERWRITE
-        case "$OVERWRITE" in
-            [yY]|[yY][eE][sS]) ;;
-            *) echo "Skipping install. Running existing terpd..."; terpd bootstrap "$@"; exit $? ;;
-        esac
-    fi
-fi
-
+# ── Ensure binary directory exists ──────────────────────────────────────
 BIN_DIR="$(dirname "$BINARY_DEST")"
 mkdir -p "$BIN_DIR"
 
-if [ "$OS" = "darwin" ]; then
-    # ── macOS: build from source (no pre-built darwin binaries) ───────
-    if ! command -v go >/dev/null 2>&1; then
-        echo "Error: Go is required to build terpd on macOS." >&2
+# ── Download binary ────────────────────────────────────────────────────
+echo "Downloading terpd v${TERPD_VERSION}..."
+TMPFILE="$(mktemp /tmp/terpd.XXXXXX)"
+DOWNLOAD_OK=0
+
+if command -v curl >/dev/null 2>&1; then
+    curl -fSL "$DOWNLOAD_URL" -o "$TMPFILE" 2>/dev/null && DOWNLOAD_OK=1
+elif command -v wget >/dev/null 2>&1; then
+    wget -q "$DOWNLOAD_URL" -O "$TMPFILE" 2>/dev/null && DOWNLOAD_OK=1
+fi
+
+if [ "$DOWNLOAD_OK" = "1" ] && [ -s "$TMPFILE" ]; then
+    chmod +x "$TMPFILE"
+    if [ -w "$BIN_DIR" ]; then
+        mv "$TMPFILE" "$BINARY_DEST"
+    else
+        echo ""
+        echo "Installing to ${BIN_DIR} requires root access."
+        echo "Enter your password (sudo) to complete installation."
+        sudo mv "$TMPFILE" "$BINARY_DEST"
+        sudo chown "$(id -u):$(id -g)" "$BINARY_DEST" 2>/dev/null || true
+        sudo chmod +x "$BINARY_DEST"
+    fi
+else
+    # ── Fallback: build from source (local checkout or go install) ────
+    rm -f "$TMPFILE"
+    echo ""
+    echo "Binary download failed. Attempting to build terpd from source..."
+    echo ""
+
+    if command -v go >/dev/null 2>&1; then
+        # Try local terp-core checkout first
+        if [ -d "$HOME/terp-core/cmd/terpd" ]; then
+            echo "Found local clone at $HOME/terp-core. Building..."
+            cd "$HOME/terp-core"
+            go build -o "$BINARY_DEST" ./cmd/terpd/
+            cd "$OLDPWD"
+        elif [ -d "$HOME/abstract/terp-core/cmd/terpd" ]; then
+            echo "Found local clone at $HOME/abstract/terp-core. Building..."
+            cd "$HOME/abstract/terp-core"
+            go build -o "$BINARY_DEST" ./cmd/terpd/
+            cd "$OLDPWD"
+        else
+            echo "Attempting go install (requires a tagged release on GitHub)..."
+            go install "github.com/terpnetwork/terp-core/v5/cmd/terpd@v${TERPD_VERSION}" 2>/dev/null && {
+                GO_BIN="$(go env GOPATH)/bin/terpd"
+                if [ "$GO_BIN" != "$BINARY_DEST" ] && [ -f "$GO_BIN" ]; then
+                    cp "$GO_BIN" "$BINARY_DEST"
+                fi
+            } || {
+                echo ""
+                echo "Error: Could not build terpd from source."
+                echo "Install Go from https://go.dev/dl/ then run:"
+                echo "  git clone https://github.com/terpnetwork/terp-core ~/terp-core"
+                echo "  cd ~/terp-core && go build -o $BINARY_DEST ./cmd/terpd/"
+                exit 1
+            }
+        fi
+        # Verify
+        if [ ! -f "$BINARY_DEST" ] || ! "$BINARY_DEST" version >/dev/null 2>&1; then
+            echo "Error: Built binary failed to run." >&2
+            exit 1
+        fi
+        echo "Build complete."
+    else
+        echo "Error: Go is required to build terpd from source." >&2
         echo "Install Go from https://go.dev/dl/ or: brew install go" >&2
         exit 1
     fi
-
-    echo "Building terpd v${TERPD_VERSION} from source (this may take a few minutes)..."
-    go install "github.com/terpnetwork/terp-core/cmd/terpd@v${TERPD_VERSION}"
-
-    # go install puts the binary in $(go env GOPATH)/bin — copy if different
-    GO_BIN="$(go env GOPATH)/bin/terpd"
-    if [ "$GO_BIN" != "$BINARY_DEST" ] && [ -f "$GO_BIN" ]; then
-        cp "$GO_BIN" "$BINARY_DEST"
-    fi
-else
-    # ── Linux: download pre-built binary ──────────────────────────────
-    echo "Downloading terpd v${TERPD_VERSION}..."
-    TMPFILE="$(mktemp /tmp/terpd.XXXXXX)"
-
-    if command -v curl >/dev/null 2>&1; then
-        curl -fSL "$DOWNLOAD_URL" -o "$TMPFILE"
-    elif command -v wget >/dev/null 2>&1; then
-        wget -q "$DOWNLOAD_URL" -O "$TMPFILE"
-    else
-        echo "Error: curl or wget required" >&2
-        rm -f "$TMPFILE"
-        exit 1
-    fi
-
-    chmod +x "$TMPFILE"
-
-    if [ "$(id -u)" -ne 0 ]; then
-        sudo mv "$TMPFILE" "$BINARY_DEST"
-        sudo chown "$(id -u):$(id -g)" "$BINARY_DEST"
-        sudo chmod +x "$BINARY_DEST"
-    else
-        mv "$TMPFILE" "$BINARY_DEST"
-    fi
 fi
 
-# Ensure binary destination directory is on PATH
+# ── PATH hint ────────────────────────────────────────────────────────────
 case ":${PATH}:" in
-    *":${BIN_DIR}:"*) ;;
+    *":${BIN_DIR}:") ;;
     *)
         echo ""
         echo "Note: ${BIN_DIR} is not on your PATH."
@@ -134,7 +200,8 @@ case ":${PATH}:" in
         ;;
 esac
 
-# Verify
+# ── Verify binary ───────────────────────────────────────────────────────
+echo ""
 echo "Verifying installation..."
 export PATH="${BIN_DIR}:${PATH}"
 terpd version || { echo "Error: terpd binary failed to run" >&2; exit 1; }
@@ -143,39 +210,126 @@ echo ""
 echo "terpd v${TERPD_VERSION} installed successfully."
 echo ""
 
-# ── Delegate to terpd bootstrap ──────────────────────────────────────
-echo "=== Running terpd bootstrap ==="
-echo ""
-
-# If interactive and no flags given, show a quick menu
-if [ $# -eq 0 ] && [ -t 0 ]; then
-    echo "Choose network:"
-    echo "  1) morocco-1  (mainnet)"
-    echo "  2) 120u-1    (testnet)"
-    printf "Enter choice [1]: "
-    read -r NET_CHOICE
-    case "$NET_CHOICE" in
-        2) BOOTSTRAP_FLAGS="--network 120u-1" ;;
-        *) BOOTSTRAP_FLAGS="--network morocco-1" ;;
-    esac
-
-    printf "Install cosmovisor? [y/N]: "
-    read -r COSMO_CHOICE
-    case "$COSMO_CHOICE" in
-        [yY]|[yY][eE][sS]) BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --cosmovisor" ;;
-    esac
-
-    if [ "$OS" = "linux" ]; then
-        printf "Create systemd service? [y/N]: "
-        read -r SVC_CHOICE
-        case "$SVC_CHOICE" in
-            [yY]|[yY][eE][sS]) BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --service" ;;
-        esac
-    fi
-
+# ── Bootstrap phase ─────────────────────────────────────────────────────
+# Build bootstrap flags.  If the user already passed explicit flags, use
+# those verbatim.  If no flags and we have a terminal, run the wizard.
+if [ $# -gt 0 ]; then
+    # Explicit flags from command line — pass them through
+    BOOTSTRAP_CMD="terpd bootstrap $*"
+elif stdin_available; then
+    # ── Interactive Setup Wizard ──────────────────────────────────────
+    echo "╔══════════════════════════════════════════════════════════╗"
+    echo "║        Terp Node Setup Wizard                            ║"
+    echo "║  Press Enter to accept defaults in [brackets].           ║"
+    echo "╚══════════════════════════════════════════════════════════╝"
     echo ""
+
+    # 1. Network
+    echo "1) Network & Chain"
+    echo "   1) morocco-1   (mainnet)"
+    echo "   2) 120u-1     (testnet)"
+    prompt NET_CHOICE "Enter choice [1]:" "1"
+    case "$NET_CHOICE" in
+        2) BOOTSTRAP_FLAGS="--network 120u-1"
+           NETWORK="120u-1" ;;
+        *) BOOTSTRAP_FLAGS="--network morocco-1"
+           NETWORK="morocco-1" ;;
+    esac
+    echo "  -> ${NETWORK}"
+    echo ""
+
+    # 2. Custom home directory
+    prompt TERP_HOME "Home directory [~/.terpd]:" ""
+    [ -n "$TERP_HOME" ] && BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --home $TERP_HOME"
+    echo ""
+
+    # 3. Custom moniker
+    prompt MONIKER "Node moniker [auto-generated]:" ""
+    [ -n "$MONIKER" ] && BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --moniker $MONIKER"
+    echo ""
+
+    # 4. Sync mode
+    echo "2) Sync Mode"
+    echo "   State-sync is fastest — downloads recent state only."
+    echo "   Snapshot restores a full archive (larger download, full history)."
+    prompt SYNC_CHOICE "Sync mode [1=state-sync, 2=snapshot, Enter=1]:" "1"
+    case "$SYNC_CHOICE" in
+        2) BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --sync-mode snapshot"
+           echo "  -> snapshot" ;;
+        *) BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --sync-mode statesync"
+           echo "  -> state-sync" ;;
+    esac
+    echo ""
+
+    # 5. State-sync RPCs (only for statesync)
+    if [ "$SYNC_CHOICE" != "2" ]; then
+        if [ "$NETWORK" = "120u-1" ]; then
+            DEFAULT_RPCS="https://testnet-rpc.terp.network:443,https://testnet-rpc.terp.network:443"
+        else
+            DEFAULT_RPCS="https://rpc.terp.network:443,https://rpc.terp.network:443"
+        fi
+        prompt RPC_CHOICE "State-sync RPCs (comma-separated) [${DEFAULT_RPCS}]:" ""
+        [ -n "$RPC_CHOICE" ] && BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --statesync-rpcs $RPC_CHOICE"
+    else
+        # Snapshot URL
+        if [ "$NETWORK" = "120u-1" ]; then
+            DEFAULT_SNAP="https://s3.terp.network/snapshots/testnet/snapshots/latest"
+        else
+            DEFAULT_SNAP="https://s3.terp.network/snapshots/mainnet/snapshots/latest"
+        fi
+        prompt SNAP_URL "Snapshot URL [${DEFAULT_SNAP}]:" ""
+        [ -n "$SNAP_URL" ] && BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --snapshot-url $SNAP_URL"
+    fi
+    echo ""
+
+    # 6. Pruning
+    echo "3) Pruning"
+    echo "   default   — keep last 100 states (balanced)"
+    echo "   nothing   — keep all states (lots of disk space)"
+    echo "   everything — prune all but current state (minimal disk)"
+    prompt PRUNE_CHOICE "Pruning [default/nothing/everything, Enter=default]:" "default"
+    BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --pruning $PRUNE_CHOICE"
+    echo "  -> ${PRUNE_CHOICE}"
+    echo ""
+
+    # 7. Trust offset (only for statesync)
+    if [ "$SYNC_CHOICE" != "2" ]; then
+        prompt TRUST_OFFSET "Trust offset blocks [1000]:" ""
+        [ -n "$TRUST_OFFSET" ] && BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --trust-offset $TRUST_OFFSET"
+    fi
+    echo ""
+
+    # 8. Cosmovisor
+    if confirm "Install cosmovisor for automatic upgrades?" "N"; then
+        BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --cosmovisor"
+    fi
+    echo ""
+
+    # 9. Systemd service (Linux only)
+    if [ "$OS" = "linux" ] && confirm "Create systemd service?" "N"; then
+        BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --service"
+    fi
+    echo ""
+
+    # 10. Public mode
+    if confirm "Public mode (enable PEX gossip and accept peers)?" "N"; then
+        BOOTSTRAP_FLAGS="$BOOTSTRAP_FLAGS --public"
+    fi
+    echo ""
+
+    BOOTSTRAP_CMD="terpd bootstrap $BOOTSTRAP_FLAGS"
 else
-    BOOTSTRAP_FLAGS="$*"
+    # Non-interactive with no flags — use defaults for mainnet
+    BOOTSTRAP_CMD="terpd bootstrap"
 fi
 
-terpd bootstrap $BOOTSTRAP_FLAGS
+# ── Run bootstrap ───────────────────────────────────────────────────────
+echo "╔══════════════════════════════════════════════════════════╗"
+echo "║  Bootstrap Command                                      ║"
+echo "║  $BOOTSTRAP_CMD"
+echo "╚══════════════════════════════════════════════════════════╝"
+echo ""
+echo "Executing bootstrap..."
+
+# shellcheck disable=SC2086
+$BOOTSTRAP_CMD

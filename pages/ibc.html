@@ -1,0 +1,2814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Inter-Blochain-Cannabiniods | IBC Dashboard For Terp Network</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --charcoal: #141414;
+            --panel: #1a1a1a;
+            --teal: #00d4a0;
+            --teal-dim: #0a5c4a;
+            --amber: #ffb000;
+            --amber-dim: #664400;
+            --rust: #c75b39;
+            --border: #2a2a2a;
+            --border-hover: #3a3a3a;
+            --text: #e0e0e0;
+            --text-dim: #666;
+            --green: #00d46a;
+            --red: #ff4444;
+            --yellow: #ffcc00;
+            --purple: #a855f7;
+            --blue: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--teal);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--teal);
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        h1 span {
+            color: var(--teal);
+        }
+
+        .network-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .net-btn {
+            background: var(--charcoal);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            font-family: inherit;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .net-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .net-btn.active {
+            border-color: var(--teal);
+            background: var(--teal-dim);
+            color: var(--teal);
+        }
+
+        .net-mode-btn {
+            padding: 3px 8px;
+            font-size: 10px;
+            font-family: inherit;
+            background: var(--charcoal);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .net-mode-btn:first-of-type {
+            border-radius: 3px 0 0 3px;
+        }
+
+        .net-mode-btn:last-of-type {
+            border-radius: 0 3px 3px 0;
+        }
+
+        .net-mode-btn:not(:last-of-type) {
+            border-right: none;
+        }
+
+        .net-mode-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .net-mode-btn.active {
+            border-color: var(--teal);
+            background: var(--teal-dim);
+            color: var(--teal);
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--charcoal);
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .stat-box {
+            background: var(--bg);
+            padding: 15px;
+            position: relative;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        .stat-val.warning {
+            color: var(--amber);
+        }
+
+        .stat-val.danger {
+            color: var(--red);
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        .dot.off {
+            background: var(--red);
+            animation: none;
+        }
+
+        .dot.pending {
+            background: var(--amber);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 1px;
+            background: var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            background: var(--charcoal);
+            border: none;
+            color: var(--text-dim);
+            padding: 12px;
+            font-family: inherit;
+            font-size: 11px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text);
+        }
+
+        .tab.active {
+            background: var(--panel);
+            color: var(--teal);
+            border-bottom: 2px solid var(--teal);
+        }
+
+        /* Content Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* IBC Topology Graph */
+        .topology-container {
+            height: 300px;
+            background: var(--bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topology-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Channel/Client/Port Browser */
+        .ibc-browser {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .browser-col {
+            border: 1px solid var(--border);
+            background: var(--charcoal);
+        }
+
+        .browser-col-header {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .browser-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .browser-item {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .browser-item:hover {
+            background: var(--panel);
+        }
+
+        .browser-item.selected {
+            background: var(--teal-dim);
+            border-left: 3px solid var(--teal);
+        }
+
+        .browser-item-id {
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--teal);
+        }
+
+        .browser-item-meta {
+            font-size: 9px;
+            color: var(--text-dim);
+        }
+
+        .state-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 9px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .state-open {
+            background: rgba(0, 212, 106, 0.2);
+            color: var(--green);
+        }
+
+        .state-closed {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--red);
+        }
+
+        .state-init {
+            background: rgba(255, 176, 0, 0.2);
+            color: var(--amber);
+        }
+
+        .state-tryopen {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--blue);
+        }
+
+        /* Skip Swap Interface */
+        .swap-interface {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .swap-panel {
+            border: 1px solid var(--border);
+            padding: 20px;
+            background: var(--charcoal);
+        }
+
+        .swap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .swap-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .token-select {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .token-select:hover {
+            border-color: var(--teal);
+        }
+
+        .token-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--panel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .token-info {
+            flex: 1;
+        }
+
+        .token-symbol {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .token-chain {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .amount-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 24px;
+            text-align: right;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        .amount-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .swap-divider {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+        }
+
+        .swap-arrow {
+            width: 32px;
+            height: 32px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .swap-arrow:hover {
+            border-color: var(--teal);
+            transform: rotate(180deg);
+        }
+
+        .route-visualization {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        .route-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .route-node {
+            padding: 4px 8px;
+            background: var(--teal-dim);
+            border: 1px solid var(--teal);
+            border-radius: 3px;
+            font-size: 10px;
+            color: var(--teal);
+        }
+
+        .route-arrow {
+            color: var(--text-dim);
+        }
+
+        /* Sweep/Seed Section */
+        .sweep-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .sweep-target {
+            border: 1px solid var(--border);
+            padding: 15px;
+            background: var(--charcoal);
+            position: relative;
+        }
+
+        .sweep-target.active {
+            border-color: var(--teal);
+            background: rgba(0, 212, 160, 0.05);
+        }
+
+        .sweep-chain {
+            font-size: 11px;
+            color: var(--teal);
+            margin-bottom: 8px;
+        }
+
+        .sweep-balance {
+            font-size: 18px;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .sweep-address {
+            font-size: 9px;
+            color: var(--text-dim);
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .sweep-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .toggle-switch {
+            width: 36px;
+            height: 18px;
+            background: var(--border);
+            border-radius: 9px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-switch.active {
+            background: var(--teal);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: var(--text);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+        }
+
+        .toggle-switch.active::after {
+            left: 20px;
+        }
+
+        /* Abstract Accounts */
+        .aa-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .aa-card {
+            border: 1px solid var(--border);
+            background: var(--charcoal);
+            overflow: hidden;
+        }
+
+        .aa-header {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .aa-name {
+            font-size: 13px;
+            color: var(--purple);
+            font-weight: 600;
+        }
+
+        .aa-type {
+            font-size: 9px;
+            padding: 2px 6px;
+            background: var(--purple);
+            color: var(--bg);
+            border-radius: 2px;
+        }
+
+        .aa-body {
+            padding: 12px;
+        }
+
+        .aa-address {
+            font-size: 10px;
+            color: var(--text-dim);
+            word-break: break-all;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+
+        .aa-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .aa-creator {
+            border: 2px dashed var(--border);
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .aa-creator:hover {
+            border-color: var(--purple);
+            background: rgba(168, 85, 247, 0.05);
+        }
+
+        .aa-creator-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--purple);
+        }
+
+        /* Self Relay Modal */
+        .self-relay-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tx-hash-input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .tx-hash-input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .relay-analysis {
+            border: 1px solid var(--border);
+            background: var(--charcoal);
+            padding: 20px;
+            display: none;
+        }
+
+        .relay-analysis.active {
+            display: block;
+        }
+
+        .packet-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--bg);
+            position: relative;
+        }
+
+        .packet-step {
+            text-align: center;
+            flex: 1;
+        }
+
+        .packet-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--panel);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 14px;
+        }
+
+        .packet-step.complete .packet-step-icon {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .packet-step.pending .packet-step-icon {
+            border-color: var(--amber);
+            color: var(--amber);
+            animation: pulse 1s infinite;
+        }
+
+        .packet-step.failed .packet-step-icon {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .packet-step-label {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .packet-connector {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            position: relative;
+        }
+
+        .packet-connector.complete {
+            background: var(--green);
+        }
+
+        .packet-connector.pending {
+            background: linear-gradient(90deg, var(--green), var(--amber));
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--teal);
+        }
+
+        .btn-danger {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .btn-danger:hover {
+            background: var(--red);
+            color: var(--bg);
+        }
+
+        .btn-amber {
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+
+        .btn-amber:hover {
+            background: var(--amber);
+            color: var(--bg);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-dim);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        code {
+            background: var(--bg);
+            padding: 2px 6px;
+            font-size: 10px;
+            border-radius: 2px;
+            color: var(--teal);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 10px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 14px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--red);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Trust Meter */
+        .trust-meter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trust-bar {
+            width: 50px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .trust-fill {
+            height: 100%;
+            transition: all 0.3s;
+        }
+
+        .trust-fill.healthy {
+            background: var(--green);
+        }
+
+        .trust-fill.warning {
+            background: var(--amber);
+        }
+
+        .trust-fill.critical {
+            background: var(--red);
+        }
+
+        .trust-text {
+            font-size: 9px;
+            color: var(--text-dim);
+        }
+
+        /* Packet Visualizer */
+        .packet-viz {
+            position: relative;
+            height: 60px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .packet-lane {
+            position: absolute;
+            height: 2px;
+            background: var(--border);
+            top: 50%;
+            left: 0;
+            right: 0;
+        }
+
+        .packet-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--teal);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: packetMove 3s linear infinite;
+            box-shadow: 0 0 10px var(--teal);
+        }
+
+        @keyframes packetMove {
+            0% {
+                left: 0;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* Chain Config */
+        .chain-config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chain-config-item:last-child {
+            border-bottom: none;
+        }
+
+        .chain-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chain-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .chain-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chain-name {
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        .chain-id {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-hover);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ibc-browser {
+                grid-template-columns: 1fr;
+            }
+
+            .swap-interface {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, var(--charcoal) 25%, var(--panel) 50%, var(--charcoal) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--teal);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            border-left-color: var(--red);
+        }
+
+        .notification.warning {
+            border-left-color: var(--amber);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <div class="logo">IBC</div>
+                <h1><span>Terp Blockchain</span> | Universal Relayer</h1>
+            </div>
+            <div class="network-selector">
+                <span style="color:var(--text-dim);font-size:10px;margin-right:4px;">NET</span>
+                <button class="net-mode-btn active" data-mode="mainnet">Mainnet</button>
+                <button class="net-mode-btn" data-mode="testnet">Testnet</button>
+                <button class="net-mode-btn" data-mode="localnet">Local</button>
+            </div>
+            <div class="chain-selector" style="position:relative;">
+                <select id="chain-select" class="form-input"
+                    style="width:auto;min-width:130px;font-size:11px;padding:4px 8px;">
+                    <option value="terp">Terp Network</option>
+                </select>
+            </div>
+            <div class="proxy-indicator"
+                style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:var(--charcoal);border:1px solid var(--border);border-radius:4px;">
+                <span class="status-indicator">
+                    <span class="dot" id="proxy-dot" style="width:5px;height:5px;"></span>
+                    <span id="proxy-text" style="font-size:9px;color:var(--text-dim);">PROXY</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="dashboard-grid">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Status Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span>Relayer Status</span>
+                        <span class="status-indicator">
+                            <span class="dot" id="status-dot"></span>
+                            <span id="status-text">SYNCING</span>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">Active Channels</div>
+                                <div class="stat-val" id="active-channels">--</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Pending Packets</div>
+                                <div class="stat-val" id="pending-packets">--</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">24h Volume</div>
+                                <div class="stat-val" id="volume-24h">--</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Avg Time</div>
+                                <div class="stat-val" id="avg-time">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">Quick Actions</div>
+                    <div class="card-body">
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 8px;"
+                            onclick="openSelfRelay()">
+                            Self Relay Tx
+                        </button>
+                        <button class="btn" style="width: 100%; margin-bottom: 8px;" onclick="openSweep()">
+                            Sweep & Seed
+                        </button>
+                        <button class="btn" style="width: 100%;" onclick="openChannelCreate()">
+                            Create Channel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Connected Chains -->
+                <div class="card">
+                    <div class="card-header">Connected Chains</div>
+                    <div class="card-body" style="padding: 0;">
+                        <div id="chain-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="channels">Channels</button>
+                    <button class="tab" data-tab="ibc-browser">IBC Browser</button>
+                    <button class="tab disabled" data-tab="swap" style="opacity:0.4;cursor:not-allowed;">Swap &
+                        Bridge</button>
+                    <button class="tab" data-tab="sweep">SVG Mint</button>
+                    <button class="tab" data-tab="abstract">Abstract Accounts</button>
+                    <button class="tab" data-tab="topology">Topology</button>
+                </div>
+
+                <!-- Channels Section -->
+                <div class="section active" id="channels-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>Active IBC Channels</span>
+                            <div>
+                                <button class="btn" onclick="refreshChannels()">Refresh</button>
+                                <button class="btn btn-primary" onclick="openChannelCreate()">New Channel</button>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div id="channels-container">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IBC Browser Section -->
+                <div class="section" id="ibc-browser-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>Client / Channel / Port Explorer</span>
+                            <button class="btn" onclick="queryIBC()">Query All</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="ibc-browser">
+                                <!-- Clients Column -->
+                                <div class="browser-col">
+                                    <div class="browser-col-header">
+                                        <span>Clients</span>
+                                        <span id="client-count" style="color: var(--text-dim);">0</span>
+                                    </div>
+                                    <div class="browser-list" id="client-list">
+                                        <!-- Populated by JS -->
+                                    </div>
+                                </div>
+
+                                <!-- Channels Column -->
+                                <div class="browser-col">
+                                    <div class="browser-col-header">
+                                        <span>Channels</span>
+                                        <span id="channel-count" style="color: var(--text-dim);">0</span>
+                                    </div>
+                                    <div class="browser-list" id="channel-browser-list">
+                                        <!-- Populated by JS -->
+                                    </div>
+                                </div>
+
+                                <!-- Ports Column -->
+                                <div class="browser-col">
+                                    <div class="browser-col-header">
+                                        <span>Ports</span>
+                                        <span id="port-count" style="color: var(--text-dim);">0</span>
+                                    </div>
+                                    <div class="browser-list" id="port-list">
+                                        <!-- Populated by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Selected Item Details -->
+                            <div id="ibc-details"
+                                style="margin-top: 20px; padding: 15px; background: var(--charcoal); border: 1px solid var(--border); display: none;">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Swap Section (disabled) -->
+                <div class="section" id="swap-section" style="position:relative;">
+                    <div class="card" style="filter:blur(3px);pointer-events:none;user-select:none;">
+                        <div class="card-header">
+                            <span>Cross-Chain Swap</span>
+                            <span style="font-size: 10px; color: var(--text-dim);">Powered by Skip Go</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="swap-interface">
+                                <div class="swap-panel">
+                                    <div class="swap-header">
+                                        <span class="swap-title">From</span>
+                                        <span style="font-size: 10px; color: var(--text-dim);">Balance: --</span>
+                                    </div>
+                                    <div class="token-select">
+                                        <div class="token-icon">?</div>
+                                        <div class="token-info">
+                                            <div class="token-symbol">Select Token</div>
+                                            <div class="token-chain">--</div>
+                                        </div>
+                                    </div>
+                                    <input type="number" class="amount-input" placeholder="0.0" disabled>
+                                </div>
+                                <div class="swap-panel">
+                                    <div class="swap-header">
+                                        <span class="swap-title">To</span>
+                                        <span style="font-size: 10px; color: var(--text-dim);">Balance: --</span>
+                                    </div>
+                                    <div class="token-select">
+                                        <div class="token-icon">?</div>
+                                        <div class="token-info">
+                                            <div class="token-symbol">Select Token</div>
+                                            <div class="token-chain">--</div>
+                                        </div>
+                                    </div>
+                                    <input type="number" class="amount-input" placeholder="0.0" disabled>
+                                </div>
+                            </div>
+                            <div class="swap-divider">
+                                <div class="swap-arrow">⇅</div>
+                            </div>
+                            <button class="btn" style="width:100%;padding:15px;font-size:14px;" disabled>Swap Coming
+                                Soon</button>
+                        </div>
+                    </div>
+                    <div
+                        style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--amber);font-size:16px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-shadow:0 0 20px rgba(0,0,0,0.8);">
+                        COMING SOON
+                        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;font-weight:400;">Swap & Bridge
+                            will be available in a future release</div>
+                    </div>
+                </div>
+
+                <!-- ═══ Sweep/Seed (disabled for v1 — kept for reuse) ═══
+                <div class="section" id="sweep-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>Sweep & Seed Accounts</span>
+                        </div>
+                        <div class="card-body">
+                            <p style="color:var(--text-dim);padding:20px;">Sweep/Seed disabled for IBC v1. Re-enable in future release.</p>
+                        </div>
+                    </div>
+                </div>
+                -->
+
+                <!-- SVG Mint Section (links to svg.html) -->
+                <div class="section" id="sweep-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>SVG Mint</span>
+                            <span id="mint-chain-badge" style="font-size: 10px; color: var(--teal);">mainnet</span>
+                        </div>
+                        <div class="card-body">
+                            <div style="padding: 20px; text-align: center;">
+                                <div style="font-size: 32px; margin-bottom: 10px;">🎨</div>
+                                <div style="font-size: 14px; margin-bottom: 5px;">Mint SVG NFTs via IBC Callback</div>
+                                <div style="font-size: 10px; color: var(--text-dim); margin-bottom: 20px;">
+                                    Deposit tokens on any connected chain → auto-mint on Terp Network
+                                </div>
+                                <a href="/svg" class="btn btn-primary"
+                                    style="display: inline-block; padding: 12px 30px; text-decoration: none;">
+                                    Open SVG Mint App →
+                                </a>
+                                <div style="margin-top: 15px; font-size: 10px; color: var(--text-dim);">
+                                    Current network: <span id="mint-network-label">mainnet</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sweep/Seed Section (removed — replaced by SVG Mint) -->
+
+                <!-- Abstract Accounts Section -->
+                <div class="section" id="abstract-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>Abstract Accounts</span>
+                            <button class="btn btn-primary" onclick="openAACreator()">Create Account</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="aa-grid" id="aa-list">
+                                <div class="aa-card aa-creator" onclick="openAACreator()">
+                                    <div class="aa-creator-icon">+</div>
+                                    <div style="font-size: 11px; color: var(--text-dim);">Create Abstract Account</div>
+                                </div>
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topology Section -->
+                <div class="section" id="topology-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>Network Topology</span>
+                            <div>
+                                <button class="btn" onclick="resetTopology()">Reset</button>
+                                <button class="btn" onclick="toggleAnimation()">Pause</button>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div class="topology-container">
+                                <canvas class="topology-canvas" id="topology-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Self Relay Modal -->
+    <div class="modal-overlay" id="self-relay-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Self Relay Transaction</span>
+                <button class="modal-close" onclick="closeModal('self-relay-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 15px;">
+                    Enter a transaction hash to analyze the IBC packet flow and manually relay if needed.
+                </p>
+                <div class="self-relay-input">
+                    <input type="text" class="tx-hash-input" id="relay-tx-hash"
+                        placeholder="Enter tx hash (e.g., A1B2C3...)">
+                    <button class="btn btn-primary" onclick="analyzeTx()">Analyze</button>
+                </div>
+
+                <div class="relay-analysis" id="relay-analysis">
+                    <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px;">PACKET FLOW ANALYSIS
+                    </div>
+
+                    <div class="packet-flow" id="packet-flow">
+                        <div class="packet-step" id="step-send">
+                            <div class="packet-step-icon">📤</div>
+                            <div class="packet-step-label">Send</div>
+                        </div>
+                        <div class="packet-connector" id="conn-1"></div>
+                        <div class="packet-step" id="step-recv">
+                            <div class="packet-step-icon">📥</div>
+                            <div class="packet-step-label">Receive</div>
+                        </div>
+                        <div class="packet-connector" id="conn-2"></div>
+                        <div class="packet-step" id="step-ack">
+                            <div class="packet-step-icon">✓</div>
+                            <div class="packet-step-label">Ack</div>
+                        </div>
+                    </div>
+
+                    <div id="relay-details"
+                        style="margin-top: 15px; padding: 15px; background: var(--bg); border: 1px solid var(--border);">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="relayPacket('recv')">Relay Receive</button>
+                        <button class="btn btn-amber" onclick="relayPacket('ack')">Relay Ack</button>
+                        <button class="btn" onclick="closeModal('self-relay-modal')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Select Modal -->
+    <div class="modal-overlay" id="token-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Select Token</span>
+                <button class="modal-close" onclick="closeModal('token-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-input" placeholder="Search tokens..." style="margin-bottom: 15px;">
+                <div id="token-list" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AA Creator Modal -->
+    <div class="modal-overlay" id="aa-creator-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Create Abstract Account</span>
+                <button class="modal-close" onclick="closeModal('aa-creator-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Account Name</label>
+                    <input type="text" class="form-input" id="aa-name" placeholder="My Smart Account">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Registration Type</label>
+                    <select class="form-input" id="aa-type">
+                        <option value="nft">NFT Owner</option>
+                        <option value="account">Sub-Account</option>
+                        <option value="multisig">Multi-Signature</option>
+                    </select>
+                </div>
+                <div class="form-group" id="aa-nft-group">
+                    <label class="form-label">NFT Contract Address</label>
+                    <input type="text" class="form-input" id="aa-nft-addr" placeholder="osmo1...">
+                </div>
+                <div class="form-group" id="aa-owner-group" style="display: none;">
+                    <label class="form-label">Owner Address</label>
+                    <input type="text" class="form-input" id="aa-owner" placeholder="osmo1...">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="createAA()">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Channel Create Modal -->
+    <div class="modal-overlay" id="channel-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Create IBC Channel</span>
+                <button class="modal-close" onclick="closeModal('channel-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Source Chain</label>
+                    <select class="form-input" id="ch-source-chain">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Chain</label>
+                    <select class="form-input" id="ch-target-chain">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Port ID</label>
+                    <input type="text" class="form-input" id="ch-port-id" value="transfer" placeholder="transfer">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Version</label>
+                    <input type="text" class="form-input" id="ch-version" value="ics20-1" placeholder="ics20-1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Order</label>
+                    <select class="form-input" id="ch-order">
+                        <option value="ORDER_UNORDERED">Unordered</option>
+                        <option value="ORDER_ORDERED">Ordered</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="createChannel()">Create Channel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration for supported chains (generic Cosmos SDK chains)
+        const CHAIN_CONFIG = {
+            terp: {
+                chain_id: 'morocco-1',
+                name: 'Terp Network',
+                color: '#00d4a0',
+                rpc: 'https://rpc-mainnet.terp.network:443',
+                rest: 'https://api-mainnet.terp.network:443',
+                prefix: 'terp',
+                denom: 'uthiol',
+                decimals: 6,
+                icon: '⛓️'
+            },
+            juno: {
+                chain_id: 'juno-1',
+                name: 'Juno',
+                color: '#f0824c',
+                rpc: 'https://rpc-juno.ecostake.com:443',
+                rest: 'https://rest-juno.ecostake.com:443',
+                prefix: 'juno',
+                denom: 'ujuno',
+                decimals: 6,
+                icon: '⚡'
+            },
+            osmosis: {
+                chain_id: 'osmosis-1',
+                name: 'Osmosis',
+                color: '#8b5cf6',
+                rpc: 'https://rpc.osmosis.zone:443',
+                rest: 'https://lcd.osmosis.zone:443',
+                prefix: 'osmo',
+                denom: 'uosmo',
+                decimals: 6,
+                icon: '⚪'
+            },
+            stargaze: {
+                chain_id: 'stargaze-1',
+                name: 'Stargaze',
+                color: '#e54c6d',
+                rpc: 'https://rpc.stargaze-apis.com:443',
+                rest: 'https://rest.stargaze-apis.com:443',
+                prefix: 'stars',
+                denom: 'ustars',
+                decimals: 6,
+                icon: '🌟'
+            },
+            omniflix: {
+                chain_id: 'omniflixhub-1',
+                name: 'Omniflix',
+                color: '#2d6cdf',
+                rpc: 'https://rpc.omniflix.network:26657',
+                rest: 'https://api.omniflix.network',
+                prefix: 'omniflix',
+                denom: 'uflix',
+                decimals: 6,
+                icon: '💜'
+            },
+            gitopia: {
+                chain_id: 'gitopia',
+                name: 'Gitopia',
+                color: '#22c55e',
+                rpc: 'https://rpc.gitopia.com:443',
+                rest: 'https://api.gitopia.com',
+                prefix: 'gitopia',
+                denom: 'ulore',
+                decimals: 6,
+                icon: '🐙'
+            },
+            evmos: {
+                chain_id: 'evmos_9001-2',
+                name: 'Evmos',
+                color: '#e74c3c',
+                rpc: 'https://evmos-rpc.polkachu.com:443',
+                rest: 'https://evmos-api.polkachu.com:443',
+                prefix: 'evmos',
+                denom: 'aevmos',
+                decimals: 18,
+                icon: '🔺'
+            },
+            akash: {
+                chain_id: 'akashnet-2',
+                name: 'Akash',
+                color: '#e65100',
+                rpc: 'https://rpc-akash.ecostake.com:443',
+                rest: 'https://rest-akash.ecostake.com:443',
+                prefix: 'akash',
+                denom: 'uakt',
+                decimals: 6,
+                icon: '☁️'
+            },
+            secret: {
+                chain_id: 'secret-4',
+                name: 'Secret Network',
+                color: '#a855f7',
+                rpc: 'https://rpc.secret.express:443',
+                rest: 'https://lcd.secret.express:443',
+                prefix: 'secret',
+                denom: 'uscrt',
+                decimals: 6,
+                icon: '🔐'
+            },
+            penumbra: {
+                chain_id: 'penumbra-1',
+                name: 'Penumbra',
+                color: '#5b21b6',
+                rpc: 'https://rpc.penumbra.zone:26657',
+                rest: '',  // Penumbra has pd gRPC, not standard REST/LCD
+                prefix: 'penumbra',
+                denom: 'upenumbra',
+                decimals: 6,
+                icon: '🪙',
+                chain_type: 'Penumbra'  // Not CosmosSDK — uses kms_config, not keys add
+            },
+            atomone: {
+                chain_id: 'atomone-1',
+                name: 'AtomOne',
+                color: '#7c3aed',
+                rpc: 'https://rpc-atomone.ecostake.com:443',
+                rest: 'https://rest-atomone.ecostake.com:443',
+                prefix: 'atone',
+                denom: 'uphoton',
+                decimals: 6,
+                icon: '☀️'
+            }
+        };
+
+        // ─── Network Mode Configuration ──────────────────────────────
+        const NETWORK_CONFIG = {
+            mainnet: {
+                label: 'Mainnet',
+                chainId: 'morocco-1',
+                proxyUrl: 'https://ibc-proxy.terp.network',
+                rpc: 'https://rpc.terp.network:443',
+                contracts: {
+                    svgMinter: 'terp1...',
+                    callbackHandler: 'terp1...'
+                }
+            },
+            testnet: {
+                label: 'Testnet',
+                chainId: '120u-1',
+                proxyUrl: '/api-testnet',
+                rpc: 'https://testnet-rpc.terp.network:443',
+                contracts: {
+                    svgMinter: 'terp1test...',
+                    callbackHandler: 'terp1test...'
+                }
+            },
+            localnet: {
+                label: 'Local',
+                chainId: 'local-testnet-1',
+                proxyUrl: '/api-local',
+                rpc: 'http://127.0.0.1:26657',
+                contracts: {
+                    svgMinter: 'terp1local...',
+                    callbackHandler: 'terp1local...'
+                }
+            }
+        };
+        let currentNetworkMode = 'mainnet';
+
+        // ─── IBC Proxy Configuration ──────────────────────────────────
+        let IBC_PROXY_URL = NETWORK_CONFIG.mainnet.proxyUrl;
+        // Connection → chain key mapping (from proxy tendermintStates cross-reference)
+        let connectionToChain = {};
+        // Proxy connection status
+        let proxyConnected = false;
+        let lastProxyFetch = null;
+
+        // Fetch all IBC data from proxy, build connection→chain mapping
+        async function fetchFromProxy() {
+            try {
+                const resp = await fetch(IBC_PROXY_URL + '/ibc/all', { signal: AbortSignal.timeout(10000) });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                if (data.error) throw new Error(data.error);
+
+                // Build clientId → chainId map from tendermintStates
+                const clientChainMap = {};
+                if (data.clients && data.tendermintStates) {
+                    for (let i = 0; i < data.clients.length; i++) {
+                        const client = data.clients[i];
+                        const tmState = data.tendermintStates[i];
+                        if (tmState && tmState.chainId) {
+                            clientChainMap[client.clientId] = tmState.chainId;
+                        }
+                    }
+                }
+
+                // Build connectionId → chain key map
+                const connMap = {};
+                if (data.connections) {
+                    for (const conn of data.connections) {
+                        const chainId = clientChainMap[conn.clientId];
+                        if (chainId) {
+                            // Find matching chain config key
+                            for (const key of Object.keys(CHAIN_CONFIG)) {
+                                if (CHAIN_CONFIG[key].chain_id === chainId) {
+                                    connMap[conn.id] = key;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                connectionToChain = connMap;
+                proxyConnected = true;
+                lastProxyFetch = data.timestamp || new Date().toISOString();
+                return data;
+            } catch (e) {
+                console.warn('[IBC Proxy] Fetch failed:', e.message);
+                proxyConnected = false;
+                return null;
+            }
+        }
+
+        // Map proxy channel format → page channel format
+        function proxyChannelToPageFormat(ch, data) {
+            const connId = ch.connectionHops && ch.connectionHops.length > 0 ? ch.connectionHops[0] : '';
+            const chainKey = connectionToChain[connId] || 'unknown';
+
+            // Find the clientId for this channel
+            let clientId = '';
+            if (data.connections) {
+                const conn = data.connections.find(c => c.id === connId);
+                if (conn) clientId = conn.clientId;
+            }
+
+            return {
+                id: ch.channelId,
+                port: ch.portId,
+                counterparty: {
+                    chain: chainKey,
+                    channel: ch.counterparty.channelId,
+                    port: ch.counterparty.portId
+                },
+                state: ch.state,
+                ordering: ch.ordering || 'ORDER_UNORDERED',
+                version: ch.version || 'ics20-1',
+                connection: connId,
+                client: clientId,
+                txCount: 0,
+                pending: 0,
+                trust: 0,
+                created: '-',
+                expires: '-'
+            };
+        }
+
+        // ─── State ─────────────────────────────────────────────────────
+        let currentChain = 'terp';
+        let channels = [];
+        let clients = [];
+        let selectedClient = null;
+        let selectedChannel = null;
+        let swapDirection = 'from';
+        let abstractAccounts = [];
+        let topologyAnimation = true;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTabs();
+            initNetworkModeSelector();
+            await loadChannels();  // This also fetches proxy
+            await queryIBC();     // Populate browser tab
+            initTopology();
+            renderChainList();
+            loadAbstractAccounts();
+            updateStats();
+            updateMintNetworkLabel();
+
+            // Poll for updates
+            setInterval(async () => {
+                await fetchFromProxy();  // Refresh proxy cache
+                updateStats();
+            }, 30000);
+            setInterval(refreshChannels, 60000);
+        });
+
+        // Tab switching
+        function initTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    if (tab.classList.contains('disabled')) {
+                        showNotification('Swap & Bridge coming soon', 'warning');
+                        return;
+                    }
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab + '-section').classList.add('active');
+                });
+            });
+        }
+
+        // Network mode selector (testnet / mainnet / localnet)
+        function initNetworkModeSelector() {
+            // Mode buttons
+            document.querySelectorAll('.net-mode-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const mode = btn.dataset.mode;
+                    document.querySelectorAll('.net-mode-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentNetworkMode = mode;
+
+                    // Update proxy URL
+                    const cfg = NETWORK_CONFIG[mode];
+                    IBC_PROXY_URL = cfg.proxyUrl;
+
+                    // Clear all stale state before re-fetching
+                    proxyConnected = false;
+                    channels = [];
+                    clients = [];
+                    connectionToChain = {};
+                    document.getElementById('channels-container').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:11px;">Loading ' + mode + ' data...</div>';
+                    document.getElementById('channel-browser-list').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:11px;">Loading...</div>';
+                    document.getElementById('client-list').innerHTML = '';
+                    document.getElementById('ibc-details').style.display = 'none';
+                    document.getElementById('client-count').textContent = '0';
+                    document.getElementById('channel-count').textContent = '0';
+                    document.getElementById('connection-count').textContent = '0';
+
+                    // Reload everything for the new network
+                    loadChannels();
+                    queryIBC();
+                    updateStats();
+                    updateMintNetworkLabel();
+                });
+            });
+
+            // Chain dropdown
+            const chainSelect = document.getElementById('chain-select');
+            if (chainSelect) {
+                chainSelect.addEventListener('change', () => {
+                    currentChain = chainSelect.value;
+                    loadChannels();
+                    updateStats();
+                });
+                // Populate with CHAIN_CONFIG keys
+                chainSelect.innerHTML = Object.keys(CHAIN_CONFIG)
+                    .filter(k => k !== 'custom')
+                    .sort()
+                    .map(k => `<option value="${k}">${CHAIN_CONFIG[k].name}</option>`)
+                    .join('');
+                chainSelect.value = 'terp';
+            }
+        }
+
+        function updateMintNetworkLabel() {
+            const label = document.getElementById('mint-network-label');
+            const badge = document.getElementById('mint-chain-badge');
+            if (label) label.textContent = NETWORK_CONFIG[currentNetworkMode].label;
+            if (badge) badge.textContent = currentNetworkMode;
+        }
+
+        // Load channels (from IBC Proxy with fallback)
+        async function loadChannels() {
+            const container = document.getElementById('channels-container');
+            container.innerHTML = '<div style="padding: 20px; color: var(--text-dim);">Loading channels...</div>';
+
+            // Try proxy first
+            const data = await fetchFromProxy();
+
+            if (data && data.channels && data.channels.length > 0) {
+                channels = data.channels.map(ch => proxyChannelToPageFormat(ch, data));
+                renderChannels();
+                return;
+            }
+
+            // ═══ Fallback: hardcoded Terp Network IBC channels ═══
+            // Only fall back for mainnet — other networks show empty state
+            if (currentNetworkMode !== 'mainnet') {
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-dim);">No IBC data available for ' + currentNetworkMode + ' — proxy not configured</div>';
+                channels = [];
+                renderChannels();
+                return;
+            }
+            const realChannels = [
+                {
+                    id: 'channel-0', port: 'transfer',
+                    counterparty: { chain: 'juno', channel: 'channel-393', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-1', client: '07-tendermint-0',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-1', port: 'transfer',
+                    counterparty: { chain: 'osmosis', channel: 'channel-6738', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-2', client: '07-tendermint-3',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-2', port: 'transfer',
+                    counterparty: { chain: 'stargaze', channel: 'channel-235', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-3', client: '07-tendermint-13',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-3', port: 'transfer',
+                    counterparty: { chain: 'omniflix', channel: 'channel-33', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-4', client: '07-tendermint-15',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-4', port: 'transfer',
+                    counterparty: { chain: 'gitopia', channel: 'channel-1', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-5', client: '07-tendermint-16',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-5', port: 'transfer',
+                    counterparty: { chain: 'evmos', channel: 'channel-101', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-7', client: '07-tendermint-23',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-6', port: 'transfer',
+                    counterparty: { chain: 'akash', channel: 'channel-115', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-8', client: '07-tendermint-25',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-7', port: 'transfer',
+                    counterparty: { chain: 'secret', channel: 'channel-100', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-9', client: '07-tendermint-28',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-8', port: 'transfer',
+                    counterparty: { chain: 'secret', channel: 'channel-165', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-10', client: '07-tendermint-31',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-9', port: 'transfer',
+                    counterparty: { chain: 'akash', channel: 'channel-139', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-11', client: '07-tendermint-32',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-10', port: 'transfer',
+                    counterparty: { chain: 'atomone', channel: 'channel-13', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-12', client: '07-tendermint-34',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                },
+                {
+                    id: 'channel-11', port: 'transfer',
+                    counterparty: { chain: 'osmosis', channel: 'channel-110258', port: 'transfer' },
+                    state: 'STATE_OPEN', ordering: 'ORDER_UNORDERED', version: 'ics20-1',
+                    connection: 'connection-13', client: '07-tendermint-33',
+                    txCount: 0, pending: 0, trust: 0, created: 'onchain', expires: 'onchain'
+                }
+            ];
+
+            channels = realChannels;
+            renderChannels();
+        }
+
+        function renderChannels() {
+            const container = document.getElementById('channels-container');
+            container.innerHTML = channels.map(ch => {
+                const stateClass = ch.state === 'STATE_OPEN' ? 'state-open' : 'state-closed';
+                const counterparty = CHAIN_CONFIG[ch.counterparty.chain] || { name: ch.counterparty.chain, color: '#666' };
+
+                const now = new Date();
+                const expiredDate = new Date(ch.expires);
+                const daysSinceExpiry = Math.floor((now - expiredDate) / (1000 * 60 * 60 * 24));
+                const expiryLabel = isNaN(daysSinceExpiry) || (ch.expires && ch.expires === '-')
+                    ? ''
+                    : daysSinceExpiry > 365
+                        ? `Expired ${Math.floor(daysSinceExpiry / 365)}yr ago`
+                        : `Expired ${daysSinceExpiry}d ago`;
+
+                return `
+                    <div class="chain-config-item" style="cursor: pointer; opacity: 0.7;" onclick="showChannelDetails('${ch.id}')">
+                        <div class="chain-info">
+                            <div class="chain-color" style="background: ${counterparty.color}"></div>
+                            <div class="chain-details">
+                                <div class="chain-name">Terp Network ↔ ${counterparty.name}</div>
+                                <div class="chain-id">
+                                    <code>${ch.id}</code> ↔ <code>${ch.counterparty.channel}</code>
+                                    <span class="state-badge ${stateClass}">${ch.state.replace('STATE_', '')}</span>
+                                    ${expiryLabel ? `<span class="state-badge state-closed">${expiryLabel}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            ${expiryLabel ? `<div style="font-size: 10px; color: var(--red);">${expiryLabel}</div>` : ''}
+                            <div style="font-size: 10px; color: var(--text-dim);">client: ${ch.client}</div>
+                            <div style="font-size: 10px; color: var(--text-dim);">conn: ${ch.connection}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // IBC Browser functionality
+        async function queryIBC() {
+            const clientList = document.getElementById('client-list');
+            const channelList = document.getElementById('channel-browser-list');
+            const portList = document.getElementById('port-list');
+
+            // Fetch from proxy if not already loaded
+            let data = null;
+            if (!proxyConnected) {
+                data = await fetchFromProxy();
+            }
+
+            if (proxyConnected && data) {
+                // ─── Proxy data ────────────────────────────────────────
+                const realClients = data.clients.map(c => {
+                    // Find chainId from tendermintStates
+                    const idx = data.clients.indexOf(c);
+                    const tm = data.tendermintStates && data.tendermintStates[idx];
+                    const chainName = tm && tm.chainId ? tm.chainId : 'unknown';
+                    return {
+                        id: c.clientId,
+                        type: c.typeUrl.replace('/ibc.lightclients.', '').replace('.v1.ClientState', ''),
+                        chain: chainName,
+                        trust: 0,
+                        expired: tm && tm.isFrozen ? 'FROZEN' : 'ACTIVE'
+                    };
+                });
+
+                document.getElementById('client-count').textContent = realClients.length;
+                clientList.innerHTML = realClients.map(c => `
+                    <div class="browser-item" onclick="selectClient('${c.id}')">
+                        <div>
+                            <div class="browser-item-id">${c.id}</div>
+                            <div class="browser-item-meta">${c.type} • ${c.chain} <span style="color: ${c.expired === 'FROZEN' ? 'var(--red)' : 'var(--green)'}; font-size: 9px;">${c.expired}</span></div>
+                        </div>
+                        <span class="state-badge ${c.expired === 'FROZEN' ? 'state-closed' : 'state-open'}">${c.expired}</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('channel-count').textContent = channels.length;
+                channelList.innerHTML = channels.map(c => `
+                    <div class="browser-item" onclick="selectChannel('${c.id}')">
+                        <div>
+                            <div class="browser-item-id">${c.id}</div>
+                            <div class="browser-item-meta">${c.port} • ${c.counterparty.chain}</div>
+                        </div>
+                        <span class="state-badge ${c.state === 'STATE_OPEN' ? 'state-open' : 'state-closed'}">
+                            ${c.state.replace('STATE_', '')}
+                        </span>
+                    </div>
+                `).join('');
+            } else {
+                // ─── Fallback: hardcoded data (mainnet only) ──────────
+                if (currentNetworkMode !== 'mainnet') {
+                    clientList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:11px;">No IBC data for ' + currentNetworkMode + '</div>';
+                    channelList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:11px;">No IBC data for ' + currentNetworkMode + '</div>';
+                    document.getElementById('client-count').textContent = '0';
+                    document.getElementById('channel-count').textContent = '0';
+                } else {
+                    const realClients = [
+                        // Juno
+                        { id: '07-tendermint-0', type: 'Tendermint', chain: 'juno-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-1', type: 'Tendermint', chain: 'juno-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-2', type: 'Tendermint', chain: 'juno-1', trust: 0, expired: 'ACTIVE' },
+                        // Stargaze
+                        { id: '07-tendermint-4', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-5', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-6', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-7', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-8', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-9', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-10', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-11', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-12', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-13', type: 'Tendermint', chain: 'stargaze-1', trust: 0, expired: 'ACTIVE' },
+                        // Osmosis
+                        { id: '07-tendermint-3', type: 'Tendermint', chain: 'osmosis-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-33', type: 'Tendermint', chain: 'osmosis-1', trust: 0, expired: 'ACTIVE' },
+                        // Omniflix
+                        { id: '07-tendermint-14', type: 'Tendermint', chain: 'omniflixhub-1', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-15', type: 'Tendermint', chain: 'omniflixhub-1', trust: 0, expired: 'ACTIVE' },
+                        // Gitopia
+                        { id: '07-tendermint-16', type: 'Tendermint', chain: 'gitopia', trust: 0, expired: 'ACTIVE' },
+                        // Evmos
+                        { id: '07-tendermint-17', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-18', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-19', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-20', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-21', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-22', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-23', type: 'Tendermint', chain: 'evmos_9001-2', trust: 0, expired: 'ACTIVE' },
+                        // Akash
+                        { id: '07-tendermint-24', type: 'Tendermint', chain: 'akashnet-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-25', type: 'Tendermint', chain: 'akashnet-2', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-32', type: 'Tendermint', chain: 'akashnet-2', trust: 0, expired: 'ACTIVE' },
+                        // Secret
+                        { id: '07-tendermint-26', type: 'Tendermint', chain: 'secret-4', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-27', type: 'Tendermint', chain: 'secret-4', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-28', type: 'Tendermint', chain: 'secret-4', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-29', type: 'Tendermint', chain: 'secret-4', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-30', type: 'Tendermint', chain: 'secret-4', trust: 0, expired: 'ACTIVE' },
+                        { id: '07-tendermint-31', type: 'Tendermint', chain: 'secret-4', trust: 0, expired: 'ACTIVE' },
+                        // AtomOne
+                        { id: '07-tendermint-34', type: 'Tendermint', chain: 'atomone-1', trust: 0, expired: 'ACTIVE' }
+                    ];
+
+                    document.getElementById('client-count').textContent = realClients.length;
+                    clientList.innerHTML = realClients.map(c => {
+                        const isActive = c.expired === 'ACTIVE';
+                        return `
+                    <div class="browser-item" onclick="selectClient('${c.id}')">
+                        <div>
+                            <div class="browser-item-id">${c.id}</div>
+                            <div class="browser-item-meta">${c.type} • ${c.chain} <span style="color: ${isActive ? 'var(--green)' : 'var(--red)'}; font-size: 9px;">${isActive ? 'ACTIVE' : 'EXPIRED ' + c.expired}</span></div>
+                        </div>
+                        <span class="state-badge ${isActive ? 'state-open' : 'state-closed'}">${isActive ? 'ACTIVE' : 'EXPIRED'}</span>
+                    </div>
+                    `;
+                    }).join('');
+
+                    document.getElementById('channel-count').textContent = channels.length;
+                    channelList.innerHTML = channels.map(c => `
+                    <div class="browser-item" onclick="selectChannel('${c.id}')">
+                        <div>
+                            <div class="browser-item-id">${c.id}</div>
+                            <div class="browser-item-meta">${c.port} • ${c.counterparty.chain}</div>
+                        </div>
+                        <span class="state-badge ${c.state === 'STATE_OPEN' ? 'state-open' : 'state-closed'}">
+                            ${c.state.replace('STATE_', '')}
+                        </span>
+                    </div>
+                `).join('');
+                }
+            }  // close nested else
+        }  // close mainnet guard
+
+        // Ports (static — valid for any Cosmos SDK chain)
+        const ports = [
+            { id: 'transfer', capabilities: ['send', 'receive'] },
+            { id: 'icahost', capabilities: ['interchain-account'] },
+            { id: 'icacontroller', capabilities: ['interchain-account'] }
+        ];
+        document.getElementById('port-count').textContent = ports.length;
+        portList.innerHTML = ports.map(p => `
+                <div class="browser-item" onclick="selectPort('${p.id}')">
+                    <div>
+                        <div class="browser-item-id">${p.id}</div>
+                        <div class="browser-item-meta">${p.capabilities.join(', ')}</div>
+                    </div>
+                </div>
+            `).join('');
+
+
+        function selectClient(id) {
+            selectedClient = id;
+            document.querySelectorAll('#client-list .browser-item').forEach(i => i.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showIBCDetails('client', id);
+        }
+
+        function selectChannel(id) {
+            selectedChannel = id;
+            document.querySelectorAll('#channel-browser-list .browser-item').forEach(i => i.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showIBCDetails('channel', id);
+        }
+
+        function selectPort(id) {
+            document.querySelectorAll('#port-list .browser-item').forEach(i => i.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showIBCDetails('port', id);
+        }
+
+        function showIBCDetails(type, id) {
+            const details = document.getElementById('ibc-details');
+            details.style.display = 'block';
+            details.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-size: 14px; color: var(--teal); text-transform: uppercase;">${type}: ${id}</span>
+                    <button class="btn" onclick="refreshIBCData('${type}', '${id}')">Refresh</button>
+                </div>
+                <div style="background: var(--bg); padding: 15px; border: 1px solid var(--border);">
+                    <pre style="margin: 0; color: var(--text-dim); font-size: 10px; overflow-x: auto;">{
+  "${type}_id": "${id}",
+  "state": "STATE_OPEN",
+  "counterparty": {
+    "${type}_id": "${id.replace(/\d+$/, match => parseInt(match) + 100)}",
+    "chain_id": "counterparty-chain-1"
+  },
+  "connection": "connection-0",
+  "version": "ics20-1"
+}</pre>
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button class="btn btn-danger" onclick="closeChannel('${id}')">Close Channel</button>
+                    <button class="btn" onclick="queryChannel('${id}')">Query Packets</button>
+                </div>
+            `;
+        }
+
+        // Skip Go Swap integration
+        function selectToken(direction) {
+            swapDirection = direction;
+            document.getElementById('token-modal').classList.add('active');
+            const tokenList = document.getElementById('token-list');
+
+            const tokens = [
+                { symbol: 'OSMO', chain: 'osmosis', icon: '⚪', balance: '1245.50' },
+                { symbol: 'ATOM', chain: 'cosmos', icon: '⚛️', balance: '45.20' },
+                { symbol: 'USDC', chain: 'noble', icon: '💎', balance: '5000.00' },
+                { symbol: 'TIA', chain: 'celestia', icon: '🌟', balance: '89.40' },
+                { symbol: 'NTRN', chain: 'neutron', icon: '🔷', balance: '230.15' }
+            ];
+
+            tokenList.innerHTML = tokens.map(t => `
+                <div class="browser-item" onclick="setToken('${direction}', '${t.symbol}', '${t.chain}', '${t.icon}', '${t.balance}')">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="token-icon">${t.icon}</div>
+                        <div>
+                            <div style="font-weight: 600;">${t.symbol}</div>
+                            <div style="font-size: 10px; color: var(--text-dim);">${t.chain}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>${t.balance}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setToken(direction, symbol, chain, icon, balance) {
+            document.getElementById(direction + '-symbol').textContent = symbol;
+            document.getElementById(direction + '-chain').textContent = chain;
+            document.getElementById(direction + '-icon').textContent = icon;
+            document.getElementById(direction + '-balance').textContent = balance;
+            closeModal('token-modal');
+
+            // Auto-calculate route if both tokens selected
+            if (document.getElementById('from-symbol').textContent !== 'Select Token' &&
+                document.getElementById('to-symbol').textContent !== 'Select Token') {
+                calculateRoute();
+            }
+        }
+
+        function flipTokens() {
+            const fromSymbol = document.getElementById('from-symbol').textContent;
+            const fromChain = document.getElementById('from-chain').textContent;
+            const fromIcon = document.getElementById('from-icon').textContent;
+            const fromBalance = document.getElementById('from-balance').textContent;
+
+            document.getElementById('from-symbol').textContent = document.getElementById('to-symbol').textContent;
+            document.getElementById('from-chain').textContent = document.getElementById('to-chain').textContent;
+            document.getElementById('from-icon').textContent = document.getElementById('to-icon').textContent;
+            document.getElementById('from-balance').textContent = document.getElementById('to-balance').textContent;
+
+            document.getElementById('to-symbol').textContent = fromSymbol === 'Select Token' ? 'Select Token' : fromSymbol;
+            document.getElementById('to-chain').textContent = fromChain;
+            document.getElementById('to-icon').textContent = fromIcon;
+            document.getElementById('to-balance').textContent = fromBalance;
+        }
+
+        function calculateRoute() {
+            const routeViz = document.getElementById('route-viz');
+            const routePath = document.getElementById('route-path');
+
+            routeViz.style.display = 'block';
+            routePath.innerHTML = `
+                <div class="route-node">OSMO</div>
+                <span class="route-arrow">→</span>
+                <div class="route-node">IBC Transfer</div>
+                <span class="route-arrow">→</span>
+                <div class="route-node">Noble</div>
+                <span class="route-arrow">→</span>
+                <div class="route-node">USDC</div>
+            `;
+        }
+
+        function executeSwap() {
+            const fromAmount = document.getElementById('from-amount').value;
+            if (!fromAmount || fromAmount <= 0) {
+                showNotification('Enter valid amount', 'error');
+                return;
+            }
+            showNotification('Route found! Execute swap via Skip Go...', 'success');
+        }
+
+        // Sweep & Seed
+        function renderSweepTargets() {
+            const container = document.getElementById('sweep-targets');
+            const chains = Object.keys(CHAIN_CONFIG).filter(k => k !== 'terp');
+
+            container.innerHTML = chains.map(chain => {
+                const config = CHAIN_CONFIG[chain];
+                return `
+                    <div class="sweep-target" id="sweep-${chain}">
+                        <div class="sweep-toggle">
+                            <div class="toggle-switch" onclick="toggleSweep('${chain}')"></div>
+                        </div>
+                        <div class="sweep-chain" style="color: ${config.color}">${config.name}</div>
+                        <div class="sweep-balance">0.0 ${config.denom.slice(1).toUpperCase()}</div>
+                        <div class="sweep-address">--</div>
+                        <div style="font-size: 9px; color: var(--text-dim); margin-top: 5px;">
+                            Min gas: 0.1 ${config.denom.slice(1).toUpperCase()}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleSweep(chain) {
+            const el = document.getElementById('sweep-' + chain);
+            const toggle = el.querySelector('.toggle-switch');
+            toggle.classList.toggle('active');
+            el.classList.toggle('active');
+        }
+
+        function executeSweep() {
+            const activeSweeps = document.querySelectorAll('.sweep-target.active');
+            if (activeSweeps.length === 0) {
+                showNotification('Select at least one target chain', 'error');
+                return;
+            }
+            showNotification(`Sweeping and seeding ${activeSweeps.length} chains...`, 'success');
+        }
+
+        // Abstract Accounts
+        function loadAbstractAccounts() {
+            // Load from localStorage or API
+            abstractAccounts = [
+                {
+                    name: 'Treasury Vault',
+                    type: 'nft',
+                    address: 'osmo1abc123...xyz',
+                    nftContract: 'osmo1nft...',
+                    balance: '50000'
+                },
+                {
+                    name: 'Trading Bot',
+                    type: 'account',
+                    address: 'osmo1def456...uvw',
+                    owner: 'osmo1owner...',
+                    balance: '12500'
+                }
+            ];
+            renderAA();
+        }
+
+        function renderAA() {
+            const container = document.getElementById('aa-list');
+            const existingCreator = container.querySelector('.aa-creator');
+            container.innerHTML = '';
+            container.appendChild(existingCreator);
+
+            abstractAccounts.forEach((aa, idx) => {
+                const div = document.createElement('div');
+                div.className = 'aa-card';
+                div.innerHTML = `
+                    <div class="aa-header">
+                        <span class="aa-name">${aa.name}</span>
+                        <span class="aa-type">${aa.type}</span>
+                    </div>
+                    <div class="aa-body">
+                        <div class="aa-address">${aa.address}</div>
+                        <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px;">
+                            ${aa.nftContract ? `NFT: ${aa.nftContract}` : `Owner: ${aa.owner}`}
+                        </div>
+                        <div style="font-size: 14px; color: var(--teal); margin-bottom: 10px;">
+                            ${aa.balance} OSMO
+                        </div>
+                        <div class="aa-actions">
+                            <button class="btn" onclick="executeAA(${idx})">Execute</button>
+                            <button class="btn" onclick="configureAA(${idx})">Configure</button>
+                        </div>
+                    </div>
+                `;
+                container.insertBefore(div, existingCreator);
+            });
+        }
+
+        function openAACreator() {
+            document.getElementById('aa-creator-modal').classList.add('active');
+        }
+
+        function createAA() {
+            const name = document.getElementById('aa-name').value;
+            const type = document.getElementById('aa-type').value;
+
+            if (!name) {
+                showNotification('Enter account name', 'error');
+                return;
+            }
+
+            const newAA = {
+                name,
+                type,
+                address: 'osmo1' + Math.random().toString(36).substring(2, 15) + '...',
+                balance: '0'
+            };
+
+            if (type === 'nft') {
+                newAA.nftContract = document.getElementById('aa-nft-addr').value;
+            } else {
+                newAA.owner = document.getElementById('aa-owner').value;
+            }
+
+            abstractAccounts.push(newAA);
+            renderAA();
+            closeModal('aa-creator-modal');
+            showNotification('Abstract Account created', 'success');
+        }
+
+        // Self Relay
+        function openSelfRelay() {
+            document.getElementById('self-relay-modal').classList.add('active');
+            document.getElementById('relay-analysis').classList.remove('active');
+        }
+
+        function analyzeTx() {
+            const hash = document.getElementById('relay-tx-hash').value;
+            if (!hash || hash.length < 10) {
+                showNotification('Enter valid transaction hash', 'error');
+                return;
+            }
+
+            document.getElementById('relay-analysis').classList.add('active');
+
+            // Simulate analysis
+            document.getElementById('step-send').classList.add('complete');
+            document.getElementById('conn-1').classList.add('complete');
+            document.getElementById('step-recv').classList.add('pending');
+            document.getElementById('conn-2').classList.add('pending');
+            document.getElementById('step-ack').classList.add('pending');
+
+            document.getElementById('relay-details').innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 11px;">
+                    <div>
+                        <div style="color: var(--text-dim); margin-bottom: 5px;">Source Chain</div>
+                        <div style="color: var(--teal);">osmosis-1</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-dim); margin-bottom: 5px;">Destination Chain</div>
+                        <div style="color: var(--amber);">noble-1</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-dim); margin-bottom: 5px;">Sequence</div>
+                        <div>15234</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-dim); margin-bottom: 5px;">Port / Channel</div>
+                        <div>transfer / channel-0</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                    <div style="color: var(--text-dim); font-size: 10px; margin-bottom: 5px;">PACKET DATA</div>
+                    <code style="font-size: 10px;">{
+  "amount": "1000000",
+  "denom": "uosmo",
+  "receiver": "noble1...",
+  "sender": "osmo1..."
+}</code>
+                </div>
+            `;
+        }
+
+        function relayPacket(type) {
+            showNotification(`Relaying ${type} packet...`, 'success');
+        }
+
+        // Topology Visualization
+        function initTopology() {
+            const canvas = document.getElementById('topology-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            // Nodes representing chains
+            const nodes = Object.entries(CHAIN_CONFIG).map(([key, config], i) => ({
+                id: key,
+                x: 100 + (i % 4) * 200,
+                y: 100 + Math.floor(i / 4) * 150,
+                color: config.color,
+                name: config.name
+            }));
+
+            // Animation loop
+            function animate() {
+                if (!topologyAnimation) return;
+
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw connections
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1;
+                nodes.forEach((node, i) => {
+                    nodes.forEach((other, j) => {
+                        if (i < j) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(other.x, other.y);
+                            ctx.stroke();
+
+                            // Animated packet
+                            const time = Date.now() / 1000;
+                            const offset = (time + i * j) % 1;
+                            const px = node.x + (other.x - node.x) * offset;
+                            const py = node.y + (other.y - node.y) * offset;
+
+                            ctx.fillStyle = '#00d4a0';
+                            ctx.beginPath();
+                            ctx.arc(px, py, 3, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    });
+                });
+
+                // Draw nodes
+                nodes.forEach(node => {
+                    ctx.fillStyle = node.color;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '10px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(node.name, node.x, node.y + 35);
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        function resetTopology() {
+            initTopology();
+        }
+
+        function toggleAnimation() {
+            topologyAnimation = !topologyAnimation;
+            if (topologyAnimation) initTopology();
+        }
+
+        // Utilities
+        function renderChainList() {
+            const container = document.getElementById('chain-list');
+            container.innerHTML = Object.entries(CHAIN_CONFIG).map(([key, config]) => `
+                <div class="chain-config-item">
+                    <div class="chain-info">
+                        <div class="chain-color" style="background: ${config.color}"></div>
+                        <div class="chain-details">
+                            <div class="chain-name">${config.name}</div>
+                            <div class="chain-id">${config.chain_id}</div>
+                        </div>
+                    </div>
+                    <div class="status-indicator">
+                        ${key === 'terp'
+                    ? `<span class="dot"></span><span style="font-size:9px;color:var(--green)">ACTIVE</span>`
+                    : key === 'penumbra'
+                        ? `<span class="dot off"></span><span style="font-size:9px;color:var(--yellow)">NO CHANNEL</span>`
+                        : `<span class="dot off"></span><span style="font-size:9px;color:var(--red)">EXPIRED</span>`
+                }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('active-channels').textContent = channels.length;
+            document.getElementById('pending-packets').textContent = channels.reduce((sum, c) => sum + (c.pending || 0), 0);
+            document.getElementById('volume-24h').textContent = proxyConnected ? channels.length + ' active channels' : '0 (all clients expired)';
+            document.getElementById('avg-time').textContent = proxyConnected ? 'via gRPC proxy' : 'N/A';
+
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            if (proxyConnected) {
+                dot.className = 'dot';
+                text.textContent = 'PROXY LIVE — ' + channels.length + ' ch, 0 exp';
+            } else {
+                dot.className = 'dot off';
+                text.textContent = 'PROXY OFFLINE — falling back';
+            }
+
+            // Update proxy indicator
+            const proxyDot = document.getElementById('proxy-dot');
+            const proxyText = document.getElementById('proxy-text');
+            if (proxyDot) {
+                proxyDot.className = proxyConnected ? 'dot' : 'dot off';
+                proxyText.textContent = proxyConnected ? 'PROXY LIVE' : 'PROXY OFF';
+                proxyText.style.color = proxyConnected ? 'var(--green)' : 'var(--red)';
+            }
+        }
+
+        function refreshChannels() {
+            loadChannels();
+        }
+
+        function showChannelDetails(id) {
+            showNotification(`Channel ${id} details - implement expand view`, 'success');
+        }
+
+        function closeChannel(id) {
+            showNotification(`Closing channel ${id}...`, 'warning');
+        }
+
+        function queryChannel(id) {
+            showNotification(`Querying packets for ${id}...`, 'success');
+        }
+
+        function refreshIBCData(type, id) {
+            showNotification(`Refreshing ${type} ${id}...`, 'success');
+        }
+
+        function openChannelCreate() {
+            const sourceSelect = document.getElementById('ch-source-chain');
+            const targetSelect = document.getElementById('ch-target-chain');
+
+            sourceSelect.innerHTML = Object.entries(CHAIN_CONFIG).map(([key, config]) =>
+                `<option value="${key}">${config.name}</option>`
+            ).join('');
+
+            targetSelect.innerHTML = Object.entries(CHAIN_CONFIG).map(([key, config]) =>
+                `<option value="${key}">${config.name}</option>`
+            ).join('');
+
+            document.getElementById('channel-modal').classList.add('active');
+        }
+
+        function createChannel() {
+            showNotification('Channel creation initiated...', 'success');
+            closeModal('channel-modal');
+        }
+
+        function openSweep() {
+            document.querySelector('.tab[data-tab="sweep"]').click();
+        }
+
+        function executeAA(idx) {
+            showNotification(`Executing Abstract Account ${idx}...`, 'success');
+        }
+
+        function configureAA(idx) {
+            showNotification(`Configuring Abstract Account ${idx}...`, 'success');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showNotification(msg, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.textContent = msg;
+            document.body.appendChild(notif);
+
+            setTimeout(() => notif.classList.add('show'), 10);
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+
+        // Handle AA type change
+        document.getElementById('aa-type')?.addEventListener('change', (e) => {
+            document.getElementById('aa-nft-group').style.display = e.target.value === 'nft' ? 'block' : 'none';
+            document.getElementById('aa-owner-group').style.display = e.target.value !== 'nft' ? 'block' : 'none';
+        });
+    </script>
+</body>
+
+</html>

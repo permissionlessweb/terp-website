@@ -7,14 +7,14 @@
       "configAccount": "terp-official",
       "contracts": {
         "accountMinter": "terp14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les6vkktx",
-        "cw721Svg": "terp1sgnlczhpdhn7sv9dts4tcuy3tpu8srckrn5gpjnu7x96pw383z6spdylc3",
+        "cw721Svg": "terp19m8rfl69kqyfsdca96gd5tyca3h0tyked8e6hp59z8y0fvs3gzlqcw9ylg",
         "cwInfusionMinter": "",
         "cwSvgMinter": "terp1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqw39a47",
         "daoCalendar": "",
         "headstash": "",
         "headstashManifold": "",
         "shitstrapFactory": "terp16jzpxp0e8550c9aht6q9svcux30vtyyyyxv5w2l2djjra46580wsgp89hp",
-        "terp721Account": "terp1sfgdede70w7t0xj0qvm65p6pcmk9fh2qywf04rd228fhrrs77tps7xjkm2",
+        "terp721Account": "terp1w62fp4ndyzegkt3xhxh752gwkatvj84ugmrcrasdd26crtvz4uxqws9hez",
         "zkWasmvmTest": ""
       },
       "defaultApps": [
@@ -44,8 +44,8 @@
         "high": 0.04,
         "low": 0.01
       },
-      "grpc": "http://localhost:55007",
-      "rest": "http://localhost:55006",
+      "grpc": "http://localhost:55027",
+      "rest": "http://localhost:55026",
       "rpc": "http://localhost:3000/rpc",
       "services": {
         "headstashServer": "",
@@ -101,7 +101,7 @@
         "high": 0.04,
         "low": 0.01
       },
-      "grpc": "https://grpc.terp.network",
+      "grpc": "http://grpc.terp.network",
       "rest": "https://api.terp.network",
       "rpc": "https://rpc.terp.network",
       "services": {

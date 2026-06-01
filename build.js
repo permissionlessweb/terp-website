@@ -43,19 +43,6 @@ async function build() {
     }
   }
 
-  // // Copy pkg/ WASM (if built).
-  // if (fs.existsSync('pkg') && (fs.existsSync('pkg/passkey_wasm.js') || fs.existsSync('pkg/oline_wasm.js'))) {
-  //   const pkgOut = path.join(outdir, 'pkg');
-  //   fs.mkdirSync(pkgOut, { recursive: true });
-  //   for (const file of fs.readdirSync('pkg')) {
-  //     if (file.endsWith('.js') || file.endsWith('.wasm') || file.endsWith('.d.ts')) {
-  //       fs.copyFileSync(path.join('pkg', file), path.join(pkgOut, file));
-  //     }
-  //   }
-  //   console.log('Copied WASM pkg/ to dist/pkg/');
-  // } else {
-  //   console.warn('No pkg/ — run: npm run wasm-build');
-  // }
 
   // Copy public/.
   fs.cpSync('public', path.join(outdir, 'public'), { recursive: true, force: true });
